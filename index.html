@@ -3,303 +3,998 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Kuis Proteksi Keluarga</title>
+<title>Cari Tahu Asuransi yang Kamu Butuhkan</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --primary: #003781; /* Biru Allianz */
-        --primary-light: #e6f0fa;
-        --bg-color: #f4f7fb;
-        --card-bg: #ffffff;
-        --text-main: #1e293b;
-        --text-muted: #64748b;
-        --border: #e2e8f0;
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --radius: 16px;
-    }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-    
-    body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
-    
-    .app-container { width: 100%; max-width: 480px; background: var(--card-bg); min-height: 100vh; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
-    
-    /* Screen Management */
-    .screen { display: none; flex-direction: column; flex: 1; animation: fadeIn 0.3s ease; }
-    .screen.active { display: flex; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+:root {
+  --bg: #f9f9f9;
+  --white: #ffffff;
+  --ink: #111;
+  --ink2: #555;
+  --ink3: #999;
+  --border: #e8e8e8;
+  --accent: #0d3b66;
+  --accent-l: #e8f0f8;
+  --green: #0a6640;
+  --green-l: #e6f5ee;
+  --yellow: #7a5500;
+  --yellow-l: #fdf5e0;
+  --red: #8a1a1a;
+  --red-l: #fdf0f0;
+  --r: 14px;
+}
 
-    /* Header Profile */
-    .header-profile { background: var(--primary-light); padding: 30px 20px 20px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; margin-bottom: 20px; }
-    .avatar { width: 64px; height: 64px; background: var(--primary); color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; margin-bottom: 10px; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .agent-name { font-size: 18px; font-weight: 700; color: var(--text-main); }
-    .agent-role { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+body {
+  background: var(--bg);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  max-width: 440px;
+  margin: 0 auto;
+}
 
-    /* Intro Screen */
-    .intro-content { padding: 20px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-    .intro-title { font-size: 28px; font-weight: 800; line-height: 1.2; margin-bottom: 15px; color: var(--primary); }
-    .intro-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; }
-    .input-group { text-align: left; margin-bottom: 25px; }
-    .input-label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; display: block; }
-    .name-input { width: 100%; padding: 16px; border: 2px solid var(--border); border-radius: 12px; font-size: 16px; outline: none; transition: 0.2s; }
-    .name-input:focus { border-color: var(--primary); }
-    .btn-main { background: var(--primary); color: white; border: none; padding: 16px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,55,129,0.2); }
-    .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
+/* SCREENS */
+.screen { display: none; }
+.screen.active { display: flex; flex-direction: column; min-height: 100vh; animation: up .25s ease both; }
+@keyframes up { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
-    /* Quiz Screen */
-    .quiz-header { padding: 20px; border-bottom: 1px solid var(--border); }
-    .progress-text { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; text-align: center; }
-    .progress-bar { height: 6px; background: var(--border); border-radius: 10px; overflow: hidden; }
-    .progress-fill { height: 100%; background: var(--primary); transition: width 0.3s ease; }
-    
-    .quiz-body { padding: 30px 20px; flex: 1; }
-    .question-emoji { font-size: 40px; margin-bottom: 15px; display: block; }
-    .question-text { font-size: 20px; font-weight: 700; line-height: 1.4; margin-bottom: 25px; color: var(--text-main); }
-    
-    .options-grid { display: flex; flex-direction: column; gap: 12px; }
-    .option-card { padding: 16px 20px; border: 2px solid var(--border); border-radius: 12px; cursor: pointer; transition: 0.2s; font-size: 15px; font-weight: 500; display: flex; align-items: center; background: white; }
-    .option-card:hover { border-color: #cbd5e1; }
-    .option-card.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); font-weight: 600; }
-    
-    .quiz-footer { padding: 20px; background: white; border-top: 1px solid var(--border); display: flex; gap: 10px; }
-    .btn-skip { background: transparent; border: 2px solid var(--border); color: var(--text-muted); padding: 15px; border-radius: 12px; font-weight: 600; flex: 1; cursor: pointer; }
-    .btn-next { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 600; flex: 2; cursor: pointer; opacity: 0.5; pointer-events: none; }
-    .btn-next.active { opacity: 1; pointer-events: auto; }
+/* ═══════════════════════
+Intro
+═══════════════════════ */
+.intro-top {
+  background: var(--accent);
+  padding: 40px 24px 36px;
+}
 
-    /* Result Screen */
-    .result-body { padding: 20px; text-align: center; }
-    .result-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 700; margin-bottom: 15px; }
-    .score-title { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
-    .score-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 25px; }
-    
-    .summary-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-align: left; margin-bottom: 25px; }
-    .summary-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; padding-bottom: 10px; border-bottom: 1px dashed var(--border); }
-    .summary-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-    .summary-label { color: var(--text-muted); font-weight: 500; }
-    .summary-val { font-weight: 700; color: var(--text-main); }
+.agent-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  background: rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 10px 14px;
+}
 
-    .btn-wa { display: flex; align-items: center; justify-content: center; gap: 10px; background: #25D366; color: white; text-decoration: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 16px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(37,211,102,0.2); }
-    .btn-restart { background: transparent; border: 2px solid var(--border); color: var(--text-muted); padding: 16px; width: 100%; border-radius: 12px; font-weight: 600; cursor: pointer; }
-    
-    /* Dynamic Badge Colors */
-    .bg-green { background: #dcfce7; color: #166534; }
-    .bg-yellow { background: #fef3c7; color: #92400e; }
-    .bg-red { background: #fee2e2; color: #991b1b; }
+.av {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.av img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+.agent-nm { font-size: 13px; font-weight: 700; color: white; }
+.agent-rl { font-size: 11px; color: rgba(255,255,255,.55); margin-top:1px; }
+
+.intro-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 10px;
+}
+
+.intro-h {
+  font-size: 26px;
+  font-weight: 800;
+  color: white;
+  line-height: 1.25;
+  letter-spacing: -.3px;
+  margin-bottom: 10px;
+}
+
+.intro-s {
+  font-size: 13px;
+  color: rgba(255,255,255,.6);
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+.intro-body { padding: 24px; flex:1; display:flex; flex-direction:column; }
+
+.steps {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.step-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.step-row:last-child { border-bottom: none; }
+
+.step-ic {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--accent-l);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.step-txt { flex:1; }
+.step-title { font-size: 13px; font-weight: 600; color: var(--ink); }
+.step-sub { font-size: 11px; color: var(--ink3); margin-top:1px; }
+
+.name-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink3); margin-bottom: 8px; }
+
+.name-inp {
+  width: 100%;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 13px 16px;
+  font-size: 15px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .15s;
+  margin-bottom: 16px;
+}
+.name-inp:focus { border-color: var(--accent); }
+.name-inp::placeholder { color: #ccc; }
+
+.btn-go {
+  width: 100%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--r);
+  padding: 15px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  letter-spacing: .2px;
+  margin-top: auto;
+}
+
+.btn-go:active { opacity: .9; }
+
+.fine { font-size: 11px; color: var(--ink3); text-align: center; margin-top: 10px; }
+
+/* ═══════════════════════
+Quiz
+═══════════════════════ */
+.q-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px 12px;
+  position: sticky; top:0; z-index:10;
+}
+
+.q-meta { display:flex; justify-content:space-between; margin-bottom:8px; }
+.q-step { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink3); }
+.q-num { font-size: 11px; font-weight: 600; color: var(--accent); }
+
+.prog { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.prog-f { height: 100%; background: var(--accent); border-radius: 2px; transition: width .35s ease; }
+
+.q-body { padding: 28px 22px 120px; flex:1; }
+
+.phase-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-l);
+  border-radius: 20px;
+  padding: 4px 12px;
+  margin-bottom: 14px;
+}
+
+.q-emoji { font-size: 28px; margin-bottom: 10px; display: block; }
+
+.q-text {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.35;
+  letter-spacing: -.3px;
+  margin-bottom: 6px;
+}
+
+.q-hint { font-size: 12px; color: var(--ink3); margin-bottom: 22px; line-height: 1.5; }
+
+.opts { display:flex; flex-direction:column; gap:8px; }
+
+.opt {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 13px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all .13s;
+  text-align: left;
+}
+.opt:active { transform: scale(.99); }
+.opt:hover { border-color: #bbb; }
+.opt.sel { border-color: var(--accent); background: var(--accent-l); }
+
+.opt-circle {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .13s;
+}
+
+.opt.sel .opt-circle {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.opt-dot {
+  width: 7px; height: 7px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+}
+.opt.sel .opt-dot { opacity: 1; }
+
+.opt-txt { font-size: 14px; color: var(--ink2); line-height: 1.5; font-weight: 400; }
+.opt.sel .opt-txt { color: var(--accent); font-weight: 600; }
+
+.q-nav {
+  position: fixed; bottom:0; left:50%; transform:translateX(-50%);
+  width:100%; max-width:440px;
+  background: rgba(249,249,249,.96);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border);
+  padding: 12px 22px 24px;
+}
+
+.btn-next {
+  width: 100%;
+  background: var(--ink);
+  color: white;
+  border: none;
+  border-radius: var(--r);
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  opacity: .3;
+  pointer-events: none;
+  transition: all .15s;
+}
+.btn-next.on { opacity:1; pointer-events:all; }
+.btn-next.on:active { opacity:.85; }
+
+/* ═══════════════════════
+Result
+═══════════════════════ */
+.result-wrap { flex:1; padding-bottom: 40px; }
+
+.result-top {
+  background: var(--accent);
+  padding: 32px 22px 28px;
+}
+
+.r-greeting { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 6px; }
+.r-title { font-size: 22px; font-weight: 800; color: white; line-height: 1.25; letter-spacing: -.3px; margin-bottom: 8px; }
+.r-sub { font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.7; }
+
+.result-section { padding: 24px 22px 0; }
+.sec-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ink3); margin-bottom: 12px; }
+
+/* Priority cards */
+.prio-list { display:flex; flex-direction:column; gap:10px; margin-bottom: 8px; }
+
+.prio-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 14px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.prio-card.p1 { border-color: #c0392b; background: #fffbfb; }
+.prio-card.p2 { border-color: #d4860a; background: #fffdf5; }
+.prio-card.p3 { border-color: #27ae60; background: #f9fffe; }
+
+.prio-badge {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.prio-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+
+.p1 .prio-num { background: #c0392b; }
+.p2 .prio-num { background: #d4860a; }
+.p3 .prio-num { background: #27ae60; }
+
+.prio-now { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+.p1 .prio-now { color: #c0392b; }
+.p2 .prio-now { color: #d4860a; }
+.p3 .prio-now { color: #27ae60; }
+
+.prio-content { flex:1; }
+.prio-icon { font-size: 18px; margin-bottom: 4px; display: block; }
+.prio-title { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.prio-why { font-size: 12.5px; color: var(--ink2); line-height: 1.6; }
+
+/* Summary box */
+.summary-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.sum-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.sum-row:last-child { border-bottom: none; }
+
+.sum-key { color: var(--ink3); }
+.sum-val { font-weight: 600; color: var(--ink); }
+
+.pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.pill-g { background: var(--green-l); color: var(--green); }
+.pill-y { background: var(--yellow-l); color: var(--yellow); }
+.pill-r { background: var(--red-l); color: var(--red); }
+.pill-b { background: #e8f0f8; color: #0d3b66; }
+
+/* WA section */
+.wa-box {
+  margin: 22px 22px 0;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.wa-agent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.wa-av {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--accent-l);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800;
+  color: var(--accent);
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+}
+.wa-av img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+.wa-nm { font-size: 14px; font-weight: 700; color: var(--ink); }
+.wa-rl { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+
+.wa-body { padding: 14px 16px 16px; }
+
+.wa-msg {
+  font-size: 12.5px;
+  color: var(--ink2);
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.btn-wa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: #25D366;
+  color: white;
+  border: none;
+  border-radius: var(--r);
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(37,211,102,.28);
+}
+.btn-wa:active { opacity:.9; }
+
+.wa-ico { width:19px; height:19px; fill:white; flex-shrink:0; }
+
+.btn-again {
+  display: block;
+  width: calc(100% - 44px);
+  margin: 12px auto 0;
+  text-align: center;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink3);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+}
+
+.tip { font-size: 11px; color: var(--ink3); text-align: center; padding: 16px 22px 32px; line-height: 1.7; }
 </style>
 </head>
 <body>
 
-<div class="app-container">
-    
-    <div class="screen active" id="screen-intro">
-        <div class="header-profile">
-            <div class="avatar" id="avatar-initials">RP</div>
-            <div class="agent-name" id="agent-name">Rizki Priya</div>
-            <div class="agent-role" id="agent-role">Insurance Advisor | Allianz Syariah</div>
+<div class="screen active" id="s-intro">
+  <div class="intro-top">
+    <div class="agent-row">
+      <div class="av" id="i-av"><span id="i-init"></span></div>
+      <div>
+        <div class="agent-nm" id="i-nm">Konsultan Asuransi</div>
+        <div class="agent-rl" id="i-rl">Agen Profesional</div>
+      </div>
+    </div>
+    <div class="intro-label">Kuis Gratis · 3 Menit</div>
+    <div class="intro-h">Asuransi mana yang<br>harus kamu miliki<br>duluan?</div>
+    <div class="intro-s">Jawab 11 pertanyaan singkat dan dapatkan urutan prioritas asuransi yang dirancang khusus untuk profil keluargamu.</div>
+  </div>
+
+  <div class="intro-body">
+    <div class="steps">
+      <div class="step-row">
+        <div class="step-ic">🗣️</div>
+        <div class="step-txt">
+          <div class="step-title">Ceritakan situasimu sekarang</div>
+          <div class="step-sub">Keluarga, pekerjaan, proteksi yang sudah ada</div>
         </div>
-        <div class="intro-content">
-            <h1 class="intro-title">Seberapa Aman Keluargamu Hari Ini?</h1>
-            <p class="intro-desc">Jawab 14 pertanyaan singkat untuk menganalisis kondisi proteksi finansial keluargamu, termasuk risiko sakit kritis.</p>
-            
-            <div class="input-group">
-                <label class="input-label">Nama Kamu (Opsional)</label>
-                <input type="text" id="user-name" class="name-input" placeholder="Masukkan nama..." autocomplete="off">
-            </div>
-            
-            <button class="btn-main" onclick="startQuiz()">Mulai Kuis Sekarang</button>
+      </div>
+      <div class="step-row">
+        <div class="step-ic">🔍</div>
+        <div class="step-txt">
+          <div class="step-title">Temukan celah yang belum terlindungi</div>
+          <div class="step-sub">Apa yang paling rentan dari kondisimu</div>
         </div>
+      </div>
+      <div class="step-row">
+        <div class="step-ic">🎯</div>
+        <div class="step-txt">
+          <div class="step-title">Dapatkan urutan prioritas asuransi</div>
+          <div class="step-sub">Mulai dari mana yang paling penting</div>
+        </div>
+      </div>
     </div>
 
-    <div class="screen" id="screen-quiz">
-        <div class="quiz-header">
-            <div class="progress-text" id="progress-text">Pertanyaan 1 dari 14</div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
-            </div>
-        </div>
-        <div class="quiz-body">
-            <span class="question-emoji" id="q-emoji">👨‍👩‍👧‍👦</span>
-            <h2 class="question-text" id="q-text">Pertanyaan memuat...</h2>
-            <div class="options-grid" id="q-options">
-                </div>
-        </div>
-        <div class="quiz-footer">
-            <button class="btn-skip" id="btn-skip" onclick="skipQuestion()">Lewati</button>
-            <button class="btn-next" id="btn-next" onclick="nextQuestion()">Lanjut</button>
-        </div>
-    </div>
-
-    <div class="screen" id="screen-result">
-        <div class="header-profile" style="padding-bottom: 30px;">
-            <div class="avatar">🎯</div>
-            <div class="agent-name">Hasil Analisis Selesai</div>
-            <div class="agent-role">Disusun otomatis untuk kamu</div>
-        </div>
-        <div class="result-body" id="result-content">
-            </div>
-    </div>
-
+    <div class="name-label">Nama kamu</div>
+    <input type="text" class="name-inp" id="u-name" placeholder="Tulis nama di sini..." maxlength="30" autocomplete="off">
+    <button class="btn-go" onclick="startQuiz()">Mulai Sekarang →</button>
+    <div class="fine">Gratis · Tanpa data disimpan · Hasil langsung keluar</div>
+  </div>
 </div>
 
+
+<div class="screen" id="s-quiz">
+  <div class="q-header">
+    <div class="q-meta">
+      <span class="q-step" id="q-phase">Situasi</span>
+      <span class="q-num" id="q-of">1 / 10</span>
+    </div>
+    <div class="prog"><div class="prog-f" id="q-prog" style="width:0%"></div></div>
+  </div>
+  <div class="q-body" id="q-body"></div>
+  <div class="q-nav">
+    <button class="btn-next" id="btn-next" onclick="nextQ()">Lanjut →</button>
+  </div>
+</div>
+
+
+<div class="screen" id="s-result">
+  <div class="result-wrap" id="result-wrap"></div>
+</div>
+
+
 <script>
-    // KONFIGURASI PROFIL (Sesuai Data Rizki Priya)
-    const AGENT = {
-        name: "Rizki Priya",
-        role: "Insurance Advisor | Allianz Syariah",
-        wa: "628989050464" // Nomor WA Rizki Priya
-    };
+/* ══════════════════════════════════════
+  EDIT INFO KAMU DI SINI
+══════════════════════════════════════ */
+const AGENT = {
+  name:    "Nama Kamu",
+  role:    "Konsultan Asuransi",
+  photo:   "",                     // URL foto (kosong = pakai inisial)
+  wa:      "628XXXXXXXXXX",       // 62 + nomor tanpa 0
+};
+/* ══════════════════════════════════════ */
 
-    // DATA PERTANYAAN
-    const QUESTIONS = [
-        { emoji:"👨‍👩‍👧‍👦", tag:"reg", text:"Siapa saja yang bergantung pada penghasilanmu saat ini?", opts:[ {t:"Tidak ada, saya mandiri",s:1}, {t:"Pasangan saja",s:2}, {t:"Pasangan & 1-2 anak",s:3}, {t:"Pasangan, anak & orang tua",s:4} ]},
-        { emoji:"💰", tag:"reg", text:"Jika penghasilan berhenti, tabungan bertahan berapa lama?", opts:[ {t:"Lebih dari 12 bulan",s:1}, {t:"6–12 bulan",s:2}, {t:"3–6 bulan",s:3}, {t:"Kurang dari 3 bulan",s:4} ]},
-        { emoji:"🏥", tag:"reg", text:"Siapkah kamu jika harus masuk RS mendadak?", opts:[ {t:"Ada asuransi pribadi + BPJS",s:1}, {t:"BPJS & asuransi kantor",s:2}, {t:"BPJS saja",s:3}, {t:"Belum siap sama sekali",s:4} ]},
-        { emoji:"🏠", tag:"reg", text:"Bagaimana beban cicilan/hutangmu saat ini?", opts:[ {t:"Tidak ada cicilan",s:1}, {t:"Ringan (< 20% gaji)",s:2}, {t:"Lumayan (30-50% gaji)",s:3}, {t:"Berat (> 50% gaji)",s:4} ]},
-        { emoji:"☂️", tag:"reg", text:"Apakah kamu punya asuransi jiwa pribadi?", opts:[ {t:"Punya, UP memadai",s:1}, {t:"Punya, tapi UP kecil",s:2}, {t:"Hanya dari kantor",s:3}, {t:"Belum punya",s:4} ]},
-        { emoji:"🎓", tag:"reg", skippable:true, text:"Bagaimana persiapan dana pendidikan anak?", opts:[ {t:"Sudah ada program khusus",s:1}, {t:"Baru menabung biasa",s:2}, {t:"Belum mulai",s:3}, {t:"Belum punya anak",s:0} ]},
-        { emoji:"💼", tag:"reg", text:"Berapa sumber penghasilan keluargamu?", opts:[ {t:"Lebih dari satu (Aktif)",s:1}, {t:"Gaji utama + Pasif",s:2}, {t:"Hanya satu gaji/bisnis",s:3}, {t:"Satu dan tidak stabil",s:4} ]},
-        { emoji:"🕐", tag:"reg", text:"Sudah berapa lama menunda punya asuransi?", opts:[ {t:"Sudah lengkap",s:1}, {t:"Baru < 3 bulan",s:2}, {t:"3 bulan - 1 tahun",s:3}, {t:"Lebih dari 1 tahun",s:4} ]},
-        { emoji:"👴", tag:"reg", text:"Persiapan untuk masa pensiun?", opts:[ {t:"Sudah investasi rutin",s:1}, {t:"Baru mulai kecil-kecilan",s:2}, {t:"Belum mulai",s:3}, {t:"Belum terpikirkan",s:4} ]},
-        { emoji:"🤔", tag:"reg", text:"Jika kamu tiada besok, keluarga bisa mandiri?", opts:[ {t:"Ya, aset/UP cukup",s:1}, {t:"Bisa, butuh adaptasi",s:2}, {t:"Susah, butuh bantuan",s:3}, {t:"Tidak bisa sama sekali",s:4} ]},
-        // SAKIT KRITIS
-        { emoji:"🧬", tag:"crit", text:"Adakah riwayat keluarga (kanker, jantung, stroke)?", opts:[ {t:"Tidak ada",s:1}, {t:"Ada 1, sudah sembuh",s:2}, {t:"Ada 1-2 sedang/pernah sakit",s:3}, {t:"Lebih dari 2 orang",s:4} ]},
-        { emoji:"🎂", tag:"crit", text:"Berapa rentang usiamu sekarang?", opts:[ {t:"Di bawah 30 tahun",s:1}, {t:"30–40 tahun",s:2}, {t:"41–50 tahun",s:3}, {t:"Di atas 50 tahun",s:4} ]},
-        { emoji:"🚬", tag:"crit", text:"Bagaimana gaya hidupmu sehari-hari?", opts:[ {t:"Sehat, rutin olahraga",s:1}, {t:"Jarang olahraga",s:2}, {t:"Perokok / sering stres",s:3}, {t:"Perokok, jarang gerak, stres",s:4} ]},
-        { emoji:"🛏️", tag:"crit", text:"Jika sakit keras dan stop kerja 2 tahun, biaya hidup dari mana?", opts:[ {t:"Ada asuransi sakit kritis",s:1}, {t:"Tabungan cukup 2 tahun",s:2}, {t:"Tabungan hanya cukup bbrp bulan",s:3}, {t:"Tidak tahu harus dari mana",s:4} ]}
-    ];
+/* ─── PERTANYAAN — dikelompokkan dengan metode TAHU ─── */
+const QS = [
+  // ── T: TANYA Situasi ──────────────────────────────
+  {
+    phase: "T — Tanya Situasi",
+    emoji: "👨‍👩‍👧‍👦",
+    text: "Siapa saja yang bergantung pada penghasilanmu?",
+    hint: "Ini menentukan seberapa besar keluargamu membutuhkan perlindungan.",
+    key: "tanggungan",
+    opts: [
+      { t: "Saya sendiri, belum ada tanggungan", v: "sendiri" },
+      { t: "Pasangan saja, belum punya anak", v: "pasangan" },
+      { t: "Pasangan dan anak-anak", v: "keluarga" },
+      { t: "Pasangan, anak, dan orang tua / saudara", v: "besar" },
+    ]
+  },
+  {
+    phase: "T — Tanya Situasi",
+    emoji: "💼",
+    text: "Dari mana penghasilanmu berasal?",
+    hint: "Status pekerjaan menentukan jenis proteksi yang paling kamu butuhkan.",
+    key: "pekerjaan",
+    opts: [
+      { t: "Karyawan tetap — gaji masuk tiap bulan", v: "karyawan" },
+      { t: "Wirausaha / freelance — penghasilan tidak tetap", v: "wiraswasta" },
+      { t: "Keduanya — kerja dan punya usaha sendiri", v: "keduanya" },
+      { t: "Pensiunan — sudah tidak aktif bekerja", v: "pensiun" },
+      { t: "Saat ini belum bekerja / sedang transisi", v: "belum" },
+    ]
+  },
+  {
+    phase: "T — Tanya Situasi",
+    emoji: "🛡️",
+    text: "Proteksi apa yang sudah kamu miliki sekarang?",
+    hint: "Agar kita tahu bagian mana yang masih kosong dan perlu diisi.",
+    key: "proteksi",
+    opts: [
+      { t: "Sudah punya asuransi jiwa + kesehatan + sakit kritis", v: "lengkap" },
+      { t: "Baru punya BPJS dan / atau asuransi dari kantor", v: "dasar" },
+      { t: "Hanya BPJS saja", v: "bpjs" },
+      { t: "Belum punya asuransi apapun", v: "kosong" },
+    ]
+  },
 
-    let currentQ = 0;
-    let answers = [];
-    let userName = "";
+  // ── A: ANGKAT Masalah ──────────────────────────────
+  {
+    phase: "A — Angkat Masalah",
+    emoji: "💰",
+    text: "Kalau penghasilanmu tiba-tiba berhenti hari ini, berapa lama tabunganmu bisa bertahan?",
+    hint: "Ini mengukur seberapa rentan kondisi finansialmu saat ini.",
+    key: "darurat",
+    opts: [
+      { t: "Lebih dari 12 bulan — sangat aman", v: "aman" },
+      { t: "6–12 bulan — masih bisa nafas", v: "cukup" },
+      { t: "3–6 bulan — mulai khawatir", v: "tipis" },
+      { t: "Kurang dari 3 bulan — panik!", v: "kritis" },
+    ]
+  },
+  {
+    phase: "A — Angkat Masalah",
+    emoji: "🏥",
+    text: "Kalau kamu harus masuk rumah sakit dan butuh biaya besar — kamu bayar pakai apa?",
+    hint: "Biaya RS yang tidak ter-cover sering jadi penyebab tabungan habis seketika.",
+    key: "kesehatan",
+    opts: [
+      { t: "Tenang, sudah ada asuransi kesehatan yang cover", v: "aman" },
+      { t: "Pakai BPJS dan asuransi kantor — cukup untuk yang dasar", v: "dasar" },
+      { t: "Pakai tabungan — semoga cukup", v: "tabungan" },
+      { t: "Belum tahu harus dari mana", v: "bingung" },
+    ]
+  },
+  {
+    phase: "A — Angkat Masalah",
+    emoji: "🧬",
+    text: "Di keluargamu, adakah yang pernah kena kanker, jantung, stroke, atau diabetes?",
+    hint: "Riwayat keluarga adalah salah satu faktor risiko terbesar untuk penyakit kritis.",
+    key: "riwayat",
+    opts: [
+      { t: "Tidak ada riwayat penyakit berat di keluarga", v: "rendah" },
+      { t: "Ada 1 orang, tapi sudah sembuh", v: "sedang" },
+      { t: "Ada 2 orang atau lebih dengan penyakit berat", v: "tinggi" },
+      { t: "Saya sendiri sudah punya riwayat penyakit tertentu", v: "sangat_tinggi" },
+    ]
+  },
 
-    function showScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        window.scrollTo(0, 0);
+  // ── H: HIDUPKAN Konsekuensi ──────────────────────────
+  {
+    phase: "H — Hidupkan Konsekuensi",
+    emoji: "🛏️",
+    text: "Bayangkan kamu harus berhenti kerja 1–2 tahun karena sakit keras. Keluargamu bertahan dari mana?",
+    hint: "Penyakit kritis tidak hanya mahal diobati — tapi juga membuat penghasilan berhenti total.",
+    key: "sakit_kritis",
+    opts: [
+      { t: "Ada asuransi sakit kritis yang cover penghasilan", v: "aman" },
+      { t: "Ada tabungan dan investasi yang cukup untuk itu", v: "cukup" },
+      { t: "Tabungan ada, tapi mungkin habis dalam beberapa bulan", v: "tipis" },
+      { t: "Jujur, ini yang paling saya khawatirkan", v: "rentan" },
+    ]
+  },
+  {
+    phase: "H — Hidupkan Konsekuensi",
+    emoji: "🎓",
+    text: "Kalau terjadi sesuatu pada kamu — siapa yang akan biayai pendidikan anak sampai selesai kuliah?",
+    hint: "Pendidikan anak sering terhenti ketika tulang punggung keluarga tidak ada.",
+    key: "pendidikan",
+    opts: [
+      { t: "Sudah ada tabungan / asuransi pendidikan khusus", v: "siap" },
+      { t: "Belum ada yang khusus, tapi tabungan mulai dikumpulkan", v: "proses" },
+      { t: "Belum mulai, rencananya nanti", v: "belum" },
+      { t: "Belum punya anak / tidak relevan", v: "skip" },
+    ]
+  },
+
+  // ── U: UNDANG Keputusan ───────────────────────────────
+  {
+    phase: "U — Undang Keputusan",
+    emoji: "📅",
+    text: "Sudah berapa lama kamu terpikir soal asuransi tapi belum mulai?",
+    hint: "Semakin lama menunda, semakin mahal premi dan semakin besar risiko yang tidak ter-cover.",
+    key: "tunda",
+    opts: [
+      { t: "Saya sudah punya proteksi yang cukup lengkap", v: "done" },
+      { t: "Baru-baru ini saja, kurang dari 3 bulan", v: "baru" },
+      { t: "Sudah cukup lama, 3 bulan – 1 tahun", v: "lama" },
+      { t: "Lebih dari 1 tahun, selalu tertunda", v: "sangat_lama" },
+    ]
+  },
+  {
+    phase: "U — Undang Keputusan",
+    emoji: "💬",
+    text: "Apa yang selama ini membuat kamu belum mulai?",
+    hint: "Tidak ada jawaban salah — ini membantu kami menyiapkan solusi yang paling sesuai.",
+    key: "hambatan",
+    opts: [
+      { t: "Belum ngerti produknya, bingung mulai dari mana", v: "info" },
+      { t: "Khawatir tidak sanggup bayar premi jangka panjang", v: "budget" },
+      { t: "Masih muda dan sehat, merasa belum butuh", v: "muda" },
+      { t: "Tidak percaya sama asuransi / susah klaim", v: "trust" },
+    ]
+  },
+];
+
+/* ─── STATE ─── */
+let curQ = 0, ans = {}, userName = "";
+
+/* ─── INIT ─── */
+function initAgent() {
+  const init = AGENT.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('i-init').textContent = init;
+  document.getElementById('i-nm').textContent = AGENT.name;
+  document.getElementById('i-rl').textContent = AGENT.role;
+  if (AGENT.photo) {
+    document.getElementById('i-av').innerHTML = `<img src="${AGENT.photo}" alt="${AGENT.name}" onerror="this.parentElement.innerHTML='${init}'">`;
+  }
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startQuiz() {
+  userName = document.getElementById('u-name').value.trim();
+  curQ = 0; ans = {};
+  showScreen('s-quiz');
+  renderQ();
+}
+
+function renderQ() {
+  const q = QS[curQ];
+  const pct = Math.round((curQ / QS.length) * 100);
+
+  document.getElementById('q-phase').textContent = q.phase;
+  document.getElementById('q-of').textContent = `${curQ+1} / ${QS.length}`;
+  document.getElementById('q-prog').style.width = pct + '%';
+
+  const saved = ans[q.key];
+
+  document.getElementById('q-body').innerHTML = `
+    <div class="phase-tag">${q.phase}</div>
+    <span class="q-emoji">${q.emoji}</span>
+    <div class="q-text">${q.text}</div>
+    <div class="q-hint">${q.hint}</div>
+    <div class="opts">
+      ${q.opts.map((o,i) => `
+        <div class="opt${saved===o.v?' sel':''}" onclick="pick(this,'${q.key}','${o.v}')">
+          <div class="opt-circle"><div class="opt-dot"></div></div>
+          <div class="opt-txt">${o.t}</div>
+        </div>`).join('')}
+    </div>
+  `;
+
+  const btn = document.getElementById('btn-next');
+  btn.className = 'btn-next' + (saved ? ' on' : '');
+  btn.textContent = curQ < QS.length-1 ? 'Lanjut →' : 'Lihat Prioritas Asuransimu 🎯';
+}
+
+function pick(el, key, val) {
+  document.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+  ans[key] = val;
+  const btn = document.getElementById('btn-next');
+  btn.classList.add('on');
+}
+
+function nextQ() {
+  if (!ans[QS[curQ].key]) return;
+  if (curQ < QS.length-1) { curQ++; renderQ(); window.scrollTo(0,0); }
+  else buildResult();
+}
+
+/* ═══════════════════════════════
+RESULT ENGINE — Hibrida Tangga + Ceklist
+═══════════════════════════════ */
+function buildResult() {
+  const a = ans;
+
+  /* ─── 1. Derive Profile (Target Market) ─── */
+  let profil = 'umum';
+  if (a.pekerjaan === 'pensiun') { profil = 'pensiunan'; }
+  else if (a.tanggungan === 'keluarga' || a.tanggungan === 'besar') { profil = 'pemberi_nafkah'; }
+  else if (a.tanggungan === 'sendiri') { profil = 'single_produktif'; }
+  else if (a.tanggungan === 'pasangan' && a.pekerjaan === 'belum') { profil = 'dewasa_no_income'; }
+  else if (a.pendidikan != 'skip' && (a.tanggungan === 'keluarga' || a.tanggungan === 'besar')) { profil = 'orang_tua'; } // Untuk dana pendidikan
+
+  /* ─── 2. Definisikan Skor Fundamental (Logika Tangga) ─── */
+  const ladderScores = {
+    jaminan_kes_dasar: 50,    // Level 1: Paling bawah
+    jaminan_kes_kompre: 45,   // Level 1: Komprehensif
+    proteksi_income: 40,      // Level 2: Pendapatan
+    asuransi_kes: 35,         // Level 3: RS Besar
+    tujuan_keu: 30,           // Level 4: Pensiun/Pendidikan
+    waris: 25,                // Level 5: Paling atas
+  };
+
+  /* ─── 3. Definisikan Skor Urgensi Profil (Logika Ceklist) ─── */
+  const checklistUrgency = {
+    merah: 10,  // Prioritas Utama
+    hijau: 5,   // Sesuai Kebutuhan
+    kuning: 2,  // Generation Wealth
+    biru: 3,    // Fungsi Akumulasi
+    hitam: 0,   // Tidak Perlu
+  };
+
+  /* ─── 4. Hitung Skor Akhir Hibrida ─── */
+  const scores = {
+    jaminan_kes_dasar: 0,
+    jaminan_kes_kompre: 0,
+    kritis: 0,
+    jiwa: 0,
+    harian: 0,
+    cacat: 0,
+    kecelakaan: 0,
+    pendidikan: 0,
+    pensiun: 0,
+    waris: 0,
+  };
+
+  // -- Jaminan Kesehatan (Dasar vs Kompre) --
+  // Merah untuk semua profil
+  scores.jaminan_kes_dasar = ladderScores.jaminan_kes_dasar + (checklistUrgency.merah * 2);
+  scores.jaminan_kes_kompre = ladderScores.jaminan_kes_kompre + (checklistUrgency.merah * 2);
+
+  // -- Proteksi Income (Sakit Kritis, Jiwa, Harian, Cacat, Kecelakaan) --
+  const inc = checklistUrgency;
+  if (profil === 'pemberi_nafkah') {
+    scores.kritis = ladderScores.proteksi_income + (inc.merah * 2);
+    scores.jiwa = ladderScores.proteksi_income + (inc.merah * 2);
+    scores.harian = ladderScores.proteksi_income + (inc.merah * 2);
+    scores.cacat = ladderScores.proteksi_income + (inc.merah * 2);
+    scores.kecelakaan = ladderScores.proteksi_income + (inc.merah * 2);
+  } else if (profil === 'pensiunan') {
+    scores.kritis = ladderScores.proteksi_income + (inc.merah * 2);
+    scores.harian = ladderScores.proteksi_income + (inc.merah * 2);
+    scores.cacat = ladderScores.proteksi_income + (inc.hijau * 2); // Contoh penyesuaian
+    scores.kecelakaan = ladderScores.proteksi_income + (inc.hijau * 2);
+  } else if (profil === 'single_produktif') {
+    scores.kritis = ladderScores.proteksi_income + (inc.hijau * 2); // Sesuai Ceklist
+    scores.jiwa = ladderScores.proteksi_income + (inc.hijau * 2);
+    scores.harian = ladderScores.proteksi_income + (inc.merah * 2); // Kebutuhan dasar
+    scores.cacat = ladderScores.proteksi_income + (inc.hijau * 2);
+    scores.kecelakaan = ladderScores.proteksi_income + (inc.hijau * 2);
+  } else if (profil === 'dewasa_no_income') {
+    scores.jiwa = ladderScores.proteksi_income + (inc.hijau * 2);
+    scores.cacat = ladderScores.proteksi_income + (inc.hijau * 2);
+    scores.kecelakaan = ladderScores.proteksi_income + (inc.hijau * 2);
+  }
+
+  // -- Fungsi Akumulasi (Pensiun, Pendidikan) --
+  const func = checklistUrgency;
+  if (profil === 'pemberi_nafkah' || profil === 'single_produktif') {
+    scores.pensiun = ladderScores.tujuan_keu + (func.biru * 2);
+    scores.pendidikan = ladderScores.tujuan_keu + (func.biru * 2);
+  }
+
+  // -- Generation Wealth (Waris) --
+  if (profil === 'dewasa_no_income') {
+    scores.waris = ladderScores.waris + (inc.kuning * 2);
+  }
+
+  /* ─── 5. Finalisasi Urutan & Pesan Kustomisasi ─── */
+  const infoMap = {
+    jaminan_kes_dasar: {
+      icon: "🏥",
+      label: "Jaminan Kesehatan Dasar",
+      why: () => {
+        if (profil === 'pemberi_nafkah') return "Prioritas Merah (Urutan 1). Sebagai pemberi nafkah, tameng dasar ini (seperti BPJS) wajib dimiliki duluan sebelum sistem perlindungan lain bisa dibangun.";
+        if (profil === 'pensiunan') return "Prioritas Merah. Sangat krusial untuk melindungi tabungan masa tuamu dari biaya pengobatan dasar.";
+        return "Prioritas Merah (Urutan 1). Jaminan dasar kesehatan adalah tameng pertama yang wajib dimiliki oleh semua orang.";
+      }
+    },
+    jaminan_kes_kompre: {
+      icon: "☂️",
+      label: "Jaminan Kesehatan Komprehensif",
+      why: () => {
+        if (profil === 'single_produktif') return "Prioritas Merah. Kamu mandiri, kesehatan adalah aset utama. Tameng komprehensif (seperti asuransi swasta) disarankan untuk melindungi tabunganmu dari biaya RS besar.";
+        if (profil === 'pensiunan') return "Prioritas Merah. Memperluas cakupan dasar untuk rawat inap yang lebih fleksibel dan nyaman di RS pilihan.";
+        return "Prioritas Merah (Urutan 1). Melengkapi tameng dasar untuk memastikan kamu bisa memilih RS dan kamar terbaik saat sakit berat.";
+      }
+    },
+    kritis: {
+      icon: "🧬",
+      label: "Asuransi Sakit Kritis",
+      why: () => {
+        if (profil === 'pemberi_nafkah') return "Level 2 (Proteksi Income). Prioritas merah karena risiko sakit kritis adalah risiko terbesar untuk pendapatan keluargamu. Ini harus ada tepat setelah tameng kesehatan dasar.";
+        if (profil === 'pensiunan') return "Prioritas Merah. Perlindungan terhadap biaya hidup jangka panjang dan non-medis yang sangat mahal dari penyakit berat.";
+        return "Level 2 (Proteksi Income). Menjamin ketersediaan dana hidup jangka panjang saat kamu tidak bisa bekerja akibat penyakit berat.";
+      }
+    },
+    jiwa: {
+      icon: "Ji",
+      label: "Asuransi Jiwa",
+      why: () => {
+        if (profil === 'pemberi_nafkah') return "Level 2 (Proteksi Income). Prioritas merah. Ini bukan untukmu, tapi untuk mereka yang bergantung padamu agar hidupnya tetap terjamin jika kamu tidak ada.";
+        return "Level 2 (Proteksi Income). Sesuai kebutuhan untuk melunasi utang atau menjamin masa depan keluarga.";
+      }
+    },
+    pensiun: {
+      icon: "💰",
+      label: "Dana Pensiun",
+      why: () => "Level 4 (Tujuan Keuangan). Prioritas utama untuk menjamin masa tua yang mandiri, seharusnya disiapkan di atas pendidikan anak.";
+    },
+    pendidikan: {
+      icon: "🎓",
+      label: "Dana Pendidikan",
+      why: () => {
+        if (a.pendidikan === 'skip') return "- Tidak Relevan -";
+        if (profil === 'pemberi_nafkah') return "Level 4 (Tujuan Keuangan). Memastikan pendidikan anak terjamin, tetapi perlindungan income-mu adalah tameng pertama.";
+        return "Level 4 (Tujuan Keuangan). Kebutuhan masa depan anak yang harus direncanakan dengan hati-hati.";
+      }
+    },
+    waris: {
+      icon: "Legacy",
+      label: "Perencanaan Waris",
+      why: () => {
+        if (profil === 'dewasa_no_income') return "Level 5 (Paling Atas). Sesuai kebutuhan untuk mempersiapkan warisan, tetapi perlindungan kesehatan keluargamu tameng pertama.";
+        return "Level 5 (Paling Atas). Sesuai kebutuhan untuk mempersiapkan warisan atau melunasi utang.";
+      }
     }
+  };
 
-    function startQuiz() {
-        let nameInput = document.getElementById('user-name').value.trim();
-        userName = nameInput !== "" ? nameInput : "Teman";
-        answers = new Array(QUESTIONS.length).fill(null);
-        currentQ = 0;
-        showScreen('screen-quiz');
-        renderQuestion();
-    }
+  const sorted = Object.entries(scores)
+    .filter(([,v]) => v > 0)
+    .sort((a,b) => b[1]-a[1])
+    .slice(0,3);
 
-    function renderQuestion() {
-        const q = QUESTIONS[currentQ];
-        document.getElementById('progress-text').innerText = `Pertanyaan ${currentQ + 1} dari ${QUESTIONS.length}`;
-        document.getElementById('progress-fill').style.width = `${((currentQ) / QUESTIONS.length) * 100}%`;
-        
-        document.getElementById('q-emoji').innerText = q.emoji;
-        document.getElementById('q-text').innerText = q.text;
-        
-        const optionsContainer = document.getElementById('q-options');
-        optionsContainer.innerHTML = '';
-        
-        q.opts.forEach((opt, index) => {
-            const div = document.createElement('div');
-            div.className = 'option-card';
-            div.innerText = opt.t;
-            div.onclick = () => selectOption(div, index, opt.s);
-            optionsContainer.appendChild(div);
-        });
+  const cardClass = ['p1','p2','p3'];
+  const prioHtml = sorted.map(([key,], i) => {
+    const info = infoMap[key];
+    if (info.label === "Jaminan Kesehatan Dasar" || info.label === "Jaminan Kesehatan Komprehensif") { ladder = 'Tameng Kesehatan'; }
+    else if (LadderScores.proteksi_income === scores[key]) { ladder = 'Pelindung Income'; }
+    else if (scores[key] === ladderScores.tujuan_keu) { ladder = 'Tujuan Keu'; }
+    else if (scores[key] === ladderScores.waris) { ladder = 'Wealth Planning'; }
+    else { ladder = 'Tameng Kesehatan'; }
+    return `
+      <div class="prio-card ${cardClass[i]}">
+        <div class="prio-badge">
+          <div class="prio-num">${i+1}</div>
+          <div class="prio-now">${i===0?'Utama':i===1?'Kedua':'Ketiga'}</div>
+        </div>
+        <div class="prio-content">
+          <span class="prio-icon">${info.icon}</span>
+          <div class="prio-title">${info.label}</div>
+          <div class="prio-why">${info.why()}</div>
+        </div>
+      </div>`;
+  }).join('');
 
-        const btnNext = document.getElementById('btn-next');
-        btnNext.classList.remove('active');
-        btnNext.innerText = currentQ === QUESTIONS.length - 1 ? 'Lihat Hasil' : 'Lanjut';
+  /* ─── Ringkasan Situasi (Pill Colors Update) ─── */
+  const pLabel = { lengkap:'Sudah Cukup Lengkap', dasar:'BPJS + Kantor', bpjs:'BPJS Saja', kosong:'Belum Ada' };
+  const pPill  = { lengkap:'pill-g', dasar:'pill-y', bpjs:'pill-y', kosong:'pill-r' };
+  const dPill  = { aman:'pill-g', cukup:'pill-y', tipis:'pill-r', kritis:'pill-r' };
+  const tLabel = { sendiri:'Sendiri', pasangan:'Pasangan', keluarga:'Pasangan + Anak', besar:'Keluarga Besar' };
+  const dLabel = { aman:'> 12 Bulan', cukup:'6–12 Bulan', tipis:'3–6 Bulan', kritis:'< 3 Bulan' };
 
-        const btnSkip = document.getElementById('btn-skip');
-        btnSkip.style.display = (q.skippable || q.tag === 'crit') ? 'block' : 'none';
-    }
+  /* ─── WA Message ─── */
+  const name = userName || "Teman";
+  const topPrio = sorted[0] ? infoMap[sorted[0][0]].label : '-';
+  const hambatanLabel = { info:'Butuh informasi lebih jelas', budget:'Khawatir soal budget', muda:'Merasa belum butuh', trust:'Kurang percaya dengan asuransi' };
+  const waMsg = encodeURIComponent( `Halo ${AGENT.name}! 👋\n\n`+ `Saya baru selesai mengisi kuis dan ingin konsultasi lebih lanjut.\n\n`+ `*Nama:* ${name}\n`+ `*Tanggungan:* ${tLabel[a.tanggungan]||'-'}\n`+ `*Proteksi saat ini:* ${pLabel[a.proteksi]||'-'}\n`+ `*Prioritas utama:* ${topPrio}\n`+ `*Yang jadi hambatan:* ${hambatanLabel[a.hambatan]||'-'}\n\n`+ `Bisa bantu saya menemukan solusi yang paling sesuai? 🙏` );
+  const waUrl = `https://wa.me/${AGENT.wa}?text=${waMsg}`;
+  const init = AGENT.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const avHtml = AGENT.photo ? `<img src="${AGENT.photo}" alt="${AGENT.name}" onerror="this.parentElement.textContent='${init}'">` : init;
+  const disp = userName || "Kamu";
 
-    function selectOption(element, optIdx, score) {
-        document.querySelectorAll('.option-card').forEach(el => el.classList.remove('selected'));
-        element.classList.add('selected');
-        answers[currentQ] = { score: score };
-        document.getElementById('btn-next').classList.add('active');
-    }
+  document.getElementById('result-wrap').innerHTML = `
+    <div class="result-top">
+      <div class="r-greeting">Hasil untuk ${disp}</div>
+      <div class="r-title">Ini urutan asuransi yang paling kamu butuhkan</div>
+      <div class="r-sub">Berdasarkan profil keluargamu dan urutan fundamental Tangga Proteksi.</div>
+    </div>
+    <div class="result-section">
+      <div class="sec-label">Prioritas Asuransimu</div>
+      <div class="prio-list">${prioHtml}</div>
+    </div>
+    <div class="result-section">
+      <div class="sec-label" style="margin-top:4px;">Ringkasan Situasimu</div>
+      <div class="summary-box">
+        <div class="sum-row"> <span class="sum-key">Tanggungan</span> <span class="sum-val">${tLabel[a.tanggungan]||'-'}</span> </div>
+        <div class="sum-row"> <span class="sum-key">Profil Target Market</span> <span class="pill pill-b">${profil.replace('_',' ')}</span> </div>
+        <div class="sum-row"> <span class="sum-key">Proteksi sekarang</span> <span class="pill ${pPill[a.proteksi]||'pill-y'}">${pLabel[a.proteksi]||'-'}</span> </div>
+        <div class="sum-row"> <span class="sum-key">Dana darurat</span> <span class="pill ${dPill[a.darurat]||'pill-y'}">${dLabel[a.darurat]||'-'}</span> </div>
+      </div>
+    </div>
+    <div class="wa-box">
+      <div class="wa-agent">
+        <div class="wa-av">${avHtml}</div>
+        <div> <div class="wa-nm">${AGENT.name}</div> <div class="wa-rl">${AGENT.role}</div> </div>
+      </div>
+      <div class="wa-body">
+        <div class="wa-msg">Mau tahu produk yang paling cocok untuk prioritasmu? Konsultasi gratis, santai, tanpa tekanan — langsung via WhatsApp.</div>
+        <a href="${waUrl}" target="_blank" class="btn-wa">
+          <svg class="wa-ico" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Konsultasi Gratis via WhatsApp </a>
+      </div>
+    </div>
+    <button class="btn-again" onclick="retry()">↺ Ulangi Kuis</button>
+    <div class="tip">Bagikan kuis ini ke keluarga atau teman agar mereka juga tahu prioritas asuransi mereka 💙</div>
+  `;
+  showScreen('s-result');
+}
 
-    function skipQuestion() {
-        answers[currentQ] = { score: 0 };
-        nextQuestion(true);
-    }
+function retry() {
+  curQ = 0; ans = {}; userName = "";
+  document.getElementById('u-name').value = '';
+  showScreen('s-intro');
+}
 
-    function nextQuestion(skipped = false) {
-        if (!skipped && answers[currentQ] === null) return;
-        
-        if (currentQ < QUESTIONS.length - 1) {
-            currentQ++;
-            renderQuestion();
-        } else {
-            calculateResult();
-        }
-    }
-
-    function calculateResult() {
-        let regScore = 0, critScore = 0;
-        let regMax = 0, critMax = 0;
-
-        QUESTIONS.forEach((q, idx) => {
-            let s = answers[idx]?.score || 0;
-            if(q.tag === 'reg') { regScore += s; regMax += 4; }
-            else { critScore += s; critMax += 4; }
-        });
-
-        let regPct = Math.round((regScore / regMax) * 100);
-        let critPct = Math.round((critScore / critMax) * 100);
-
-        // Kategori General
-        let genStatus = regPct <= 35 ? { l:"Aman & Terlindungi", c:"bg-green", d:"Fondasi finansialmu cukup solid." } 
-                      : regPct <= 65 ? { l:"Perlu Perhatian", c:"bg-yellow", d:"Ada beberapa celah proteksi yang perlu ditutup." } 
-                      : { l:"Sangat Berisiko", c:"bg-red", d:"Keluargamu sangat rentan terhadap risiko finansial." };
-
-        // Kategori Kritis
-        let critStatus = critPct <= 30 ? { l:"Risiko Rendah", c:"bg-green" }
-                       : critPct <= 65 ? { l:"Risiko Sedang", c:"bg-yellow" }
-                       : { l:"Risiko Tinggi", c:"bg-red" };
-
-        // Buat Pesan WhatsApp
-        const waText = encodeURIComponent(
-            `Halo ${AGENT.name}, saya baru saja mengisi Kuis Proteksi.\n\n`+
-            `Nama: ${userName}\n`+
-            `Kondisi Umum: *${genStatus.l}* (${regPct}%)\n`+
-            `Risiko Sakit Kritis: *${critStatus.l}* (${critPct}%)\n\n`+
-            `Saya ingin konsultasi gratis mengenai asuransi yang tepat. Mohon infonya 🙏`
-        );
-        const waLink = `https://api.whatsapp.com/send?phone=${AGENT.wa}&text=${waText}`;
-
-        document.getElementById('result-content').innerHTML = `
-            <div class="result-badge ${genStatus.c}">${genStatus.l}</div>
-            <h2 class="score-title">Halo, ${userName}</h2>
-            <p class="score-desc">${genStatus.d}</p>
-            
-            <div class="summary-box">
-                <div class="summary-item">
-                    <span class="summary-label">Skor Risiko Umum</span>
-                    <span class="summary-val">${regPct}%</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Risiko Sakit Kritis</span>
-                    <span class="summary-val ${critStatus.c}" style="padding: 2px 8px; border-radius: 4px; font-size: 12px;">${critStatus.l}</span>
-                </div>
-            </div>
-
-            <a href="${waLink}" class="btn-wa">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                Konsultasi via WhatsApp
-            </a>
-            
-            <button class="btn-restart" onclick="location.reload()">Ulangi Kuis</button>
-        `;
-        
-        document.getElementById('progress-fill').style.width = '100%';
-        showScreen('screen-result');
-    }
+initAgent();
 </script>
-
 </body>
 </html>
