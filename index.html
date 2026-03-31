@@ -1,1000 +1,115 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cari Tahu Asuransi yang Kamu Butuhkan</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
-:root {
-  --bg: #f9f9f9;
-  --white: #ffffff;
-  --ink: #111;
-  --ink2: #555;
-  --ink3: #999;
-  --border: #e8e8e8;
-  --accent: #0d3b66;
-  --accent-l: #e8f0f8;
-  --green: #0a6640;
-  --green-l: #e6f5ee;
-  --yellow: #7a5500;
-  --yellow-l: #fdf5e0;
-  --red: #8a1a1a;
-  --red-l: #fdf0f0;
-  --r: 14px;
-}
-
-body {
-  background: var(--bg);
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  color: var(--ink);
-  min-height: 100vh;
-  max-width: 440px;
-  margin: 0 auto;
-}
-
-/* SCREENS */
-.screen { display: none; }
-.screen.active { display: flex; flex-direction: column; min-height: 100vh; animation: up .25s ease both; }
-@keyframes up { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-
-/* ═══════════════════════
-Intro
-═══════════════════════ */
-.intro-top {
-  background: var(--accent);
-  padding: 40px 24px 36px;
-}
-
-.agent-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 28px;
-  background: rgba(255,255,255,.08);
-  border-radius: 12px;
-  padding: 10px 14px;
-}
-
-.av {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.15);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 800;
-  color: white;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-
-.av img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
-
-.agent-nm { font-size: 13px; font-weight: 700; color: white; }
-.agent-rl { font-size: 11px; color: rgba(255,255,255,.55); margin-top:1px; }
-
-.intro-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,.45);
-  margin-bottom: 10px;
-}
-
-.intro-h {
-  font-size: 26px;
-  font-weight: 800;
-  color: white;
-  line-height: 1.25;
-  letter-spacing: -.3px;
-  margin-bottom: 10px;
-}
-
-.intro-s {
-  font-size: 13px;
-  color: rgba(255,255,255,.6);
-  line-height: 1.7;
-  font-weight: 400;
-}
-
-.intro-body { padding: 24px; flex:1; display:flex; flex-direction:column; }
-
-.steps {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  overflow: hidden;
-  margin-bottom: 24px;
-}
-
-.step-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 13px 16px;
-  border-bottom: 1px solid var(--border);
-}
-.step-row:last-child { border-bottom: none; }
-
-.step-ic {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: var(--accent-l);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px;
-  flex-shrink: 0;
-}
-
-.step-txt { flex:1; }
-.step-title { font-size: 13px; font-weight: 600; color: var(--ink); }
-.step-sub { font-size: 11px; color: var(--ink3); margin-top:1px; }
-
-.name-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink3); margin-bottom: 8px; }
-
-.name-inp {
-  width: 100%;
-  background: var(--white);
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  padding: 13px 16px;
-  font-size: 15px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  color: var(--ink);
-  outline: none;
-  transition: border-color .15s;
-  margin-bottom: 16px;
-}
-.name-inp:focus { border-color: var(--accent); }
-.name-inp::placeholder { color: #ccc; }
-
-.btn-go {
-  width: 100%;
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: var(--r);
-  padding: 15px;
-  font-size: 15px;
-  font-weight: 700;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  cursor: pointer;
-  letter-spacing: .2px;
-  margin-top: auto;
-}
-
-.btn-go:active { opacity: .9; }
-
-.fine { font-size: 11px; color: var(--ink3); text-align: center; margin-top: 10px; }
-
-/* ═══════════════════════
-Quiz
-═══════════════════════ */
-.q-header {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 20px 12px;
-  position: sticky; top:0; z-index:10;
-}
-
-.q-meta { display:flex; justify-content:space-between; margin-bottom:8px; }
-.q-step { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink3); }
-.q-num { font-size: 11px; font-weight: 600; color: var(--accent); }
-
-.prog { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
-.prog-f { height: 100%; background: var(--accent); border-radius: 2px; transition: width .35s ease; }
-
-.q-body { padding: 28px 22px 120px; flex:1; }
-
-.phase-tag {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--accent);
-  background: var(--accent-l);
-  border-radius: 20px;
-  padding: 4px 12px;
-  margin-bottom: 14px;
-}
-
-.q-emoji { font-size: 28px; margin-bottom: 10px; display: block; }
-
-.q-text {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--ink);
-  line-height: 1.35;
-  letter-spacing: -.3px;
-  margin-bottom: 6px;
-}
-
-.q-hint { font-size: 12px; color: var(--ink3); margin-bottom: 22px; line-height: 1.5; }
-
-.opts { display:flex; flex-direction:column; gap:8px; }
-
-.opt {
-  background: var(--white);
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  padding: 13px 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  transition: all .13s;
-  text-align: left;
-}
-.opt:active { transform: scale(.99); }
-.opt:hover { border-color: #bbb; }
-.opt.sel { border-color: var(--accent); background: var(--accent-l); }
-
-.opt-circle {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border);
-  flex-shrink: 0;
-  margin-top: 1px;
-  display: flex; align-items: center; justify-content: center;
-  transition: all .13s;
-}
-
-.opt.sel .opt-circle {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.opt-dot {
-  width: 7px; height: 7px;
-  background: white;
-  border-radius: 50%;
-  opacity: 0;
-}
-.opt.sel .opt-dot { opacity: 1; }
-
-.opt-txt { font-size: 14px; color: var(--ink2); line-height: 1.5; font-weight: 400; }
-.opt.sel .opt-txt { color: var(--accent); font-weight: 600; }
-
-.q-nav {
-  position: fixed; bottom:0; left:50%; transform:translateX(-50%);
-  width:100%; max-width:440px;
-  background: rgba(249,249,249,.96);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid var(--border);
-  padding: 12px 22px 24px;
-}
-
-.btn-next {
-  width: 100%;
-  background: var(--ink);
-  color: white;
-  border: none;
-  border-radius: var(--r);
-  padding: 14px;
-  font-size: 14px;
-  font-weight: 700;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  cursor: pointer;
-  opacity: .3;
-  pointer-events: none;
-  transition: all .15s;
-}
-.btn-next.on { opacity:1; pointer-events:all; }
-.btn-next.on:active { opacity:.85; }
-
-/* ═══════════════════════
-Result
-═══════════════════════ */
-.result-wrap { flex:1; padding-bottom: 40px; }
-
-.result-top {
-  background: var(--accent);
-  padding: 32px 22px 28px;
-}
-
-.r-greeting { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 6px; }
-.r-title { font-size: 22px; font-weight: 800; color: white; line-height: 1.25; letter-spacing: -.3px; margin-bottom: 8px; }
-.r-sub { font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.7; }
-
-.result-section { padding: 24px 22px 0; }
-.sec-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ink3); margin-bottom: 12px; }
-
-/* Priority cards */
-.prio-list { display:flex; flex-direction:column; gap:10px; margin-bottom: 8px; }
-
-.prio-card {
-  background: var(--white);
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  padding: 16px 14px;
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-}
-
-.prio-card.p1 { border-color: #c0392b; background: #fffbfb; }
-.prio-card.p2 { border-color: #d4860a; background: #fffdf5; }
-.prio-card.p3 { border-color: #27ae60; background: #f9fffe; }
-
-.prio-badge {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.prio-num {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 800;
-  color: white;
-  flex-shrink: 0;
-}
-
-.p1 .prio-num { background: #c0392b; }
-.p2 .prio-num { background: #d4860a; }
-.p3 .prio-num { background: #27ae60; }
-
-.prio-now { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
-.p1 .prio-now { color: #c0392b; }
-.p2 .prio-now { color: #d4860a; }
-.p3 .prio-now { color: #27ae60; }
-
-.prio-content { flex:1; }
-.prio-icon { font-size: 18px; margin-bottom: 4px; display: block; }
-.prio-title { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
-.prio-why { font-size: 12.5px; color: var(--ink2); line-height: 1.6; }
-
-/* Summary box */
-.summary-box {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-
-.sum-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 11px 14px;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-.sum-row:last-child { border-bottom: none; }
-
-.sum-key { color: var(--ink3); }
-.sum-val { font-weight: 600; color: var(--ink); }
-
-.pill {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 20px;
-}
-.pill-g { background: var(--green-l); color: var(--green); }
-.pill-y { background: var(--yellow-l); color: var(--yellow); }
-.pill-r { background: var(--red-l); color: var(--red); }
-.pill-b { background: #e8f0f8; color: #0d3b66; }
-
-/* WA section */
-.wa-box {
-  margin: 22px 22px 0;
-  background: var(--white);
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  overflow: hidden;
-}
-
-.wa-agent {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 16px 14px;
-  border-bottom: 1px solid var(--border);
-}
-
-.wa-av {
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: var(--accent-l);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; font-weight: 800;
-  color: var(--accent);
-  flex-shrink: 0;
-  overflow: hidden;
-  border: 1.5px solid var(--border);
-}
-.wa-av img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
-
-.wa-nm { font-size: 14px; font-weight: 700; color: var(--ink); }
-.wa-rl { font-size: 11px; color: var(--ink3); margin-top: 1px; }
-
-.wa-body { padding: 14px 16px 16px; }
-
-.wa-msg {
-  font-size: 12.5px;
-  color: var(--ink2);
-  line-height: 1.7;
-  margin-bottom: 14px;
-}
-
-.btn-wa {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  background: #25D366;
-  color: white;
-  border: none;
-  border-radius: var(--r);
-  padding: 14px;
-  font-size: 14px;
-  font-weight: 700;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  text-decoration: none;
-  cursor: pointer;
-  box-shadow: 0 3px 12px rgba(37,211,102,.28);
-}
-.btn-wa:active { opacity:.9; }
-
-.wa-ico { width:19px; height:19px; fill:white; flex-shrink:0; }
-
-.btn-again {
-  display: block;
-  width: calc(100% - 44px);
-  margin: 12px auto 0;
-  text-align: center;
-  background: none;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  padding: 12px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink3);
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  cursor: pointer;
-}
-
-.tip { font-size: 11px; color: var(--ink3); text-align: center; padding: 16px 22px 32px; line-height: 1.7; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Stress Test - SPIN Method</title>
+    <style>
+        :root { --primary: #003399; --secondary: #f4f4f9; --accent: #00aaff; --text: #333; }
+        body { font-family: 'Arial', sans-serif; background: var(--secondary); display: flex; justify-content: center; padding: 20px; }
+        #quiz-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
+        .hidden { display: none; }
+        h2 { color: var(--primary); line-height: 1.4; margin-bottom: 25px; }
+        .btn { display: block; width: 100%; padding: 15px; margin: 12px 0; border: 1px solid #ddd; border-radius: 10px; background: white; cursor: pointer; transition: 0.3s; text-align: left; font-size: 1rem; }
+        .btn:hover { background: var(--primary); color: white; }
+        .progress-container { height: 6px; background: #eee; border-radius: 3px; margin-bottom: 30px; }
+        .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: 0.4s; }
+        .tag { display: inline-block; padding: 4px 10px; background: #eef; color: var(--primary); border-radius: 5px; font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; }
+    </style>
 </head>
 <body>
 
-<div class="screen active" id="s-intro">
-  <div class="intro-top">
-    <div class="agent-row">
-      <div class="av" id="i-av"><span id="i-init"></span></div>
-      <div>
-        <div class="agent-nm" id="i-nm">Konsultan Asuransi</div>
-        <div class="agent-rl" id="i-rl">Agen Profesional</div>
-      </div>
-    </div>
-    <div class="intro-label">Kuis Gratis · 3 Menit</div>
-    <div class="intro-h">Asuransi mana yang<br>harus kamu miliki<br>duluan?</div>
-    <div class="intro-s">Jawab 11 pertanyaan singkat dan dapatkan urutan prioritas asuransi yang dirancang khusus untuk profil keluargamu.</div>
-  </div>
+<div id="quiz-card">
+    <div class="progress-container"><div class="progress-bar" id="bar"></div></div>
 
-  <div class="intro-body">
-    <div class="steps">
-      <div class="step-row">
-        <div class="step-ic">🗣️</div>
-        <div class="step-txt">
-          <div class="step-title">Ceritakan situasimu sekarang</div>
-          <div class="step-sub">Keluarga, pekerjaan, proteksi yang sudah ada</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-ic">🔍</div>
-        <div class="step-txt">
-          <div class="step-title">Temukan celah yang belum terlindungi</div>
-          <div class="step-sub">Apa yang paling rentan dari kondisimu</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="step-ic">🎯</div>
-        <div class="step-txt">
-          <div class="step-title">Dapatkan urutan prioritas asuransi</div>
-          <div class="step-sub">Mulai dari mana yang paling penting</div>
-        </div>
-      </div>
+    <div id="step-start">
+        <span class="tag">ANALISIS RISIKO</span>
+        <h2>Siapa yang ingin Anda lindungi masa depannya hari ini?</h2>
+        <button class="btn" onclick="initSpin('single')">Diri Sendiri (Fokus Karier)</button>
+        <button class="btn" onclick="initSpin('parent')">Keluarga & Anak (Fokus Proteksi)</button>
+        <button class="btn" onclick="initSpin('senior')">Aset & Warisan (Fokus Distribusi)</button>
     </div>
 
-    <div class="name-label">Nama kamu</div>
-    <input type="text" class="name-inp" id="u-name" placeholder="Tulis nama di sini..." maxlength="30" autocomplete="off">
-    <button class="btn-go" onclick="startQuiz()">Mulai Sekarang →</button>
-    <div class="fine">Gratis · Tanpa data disimpan · Hasil langsung keluar</div>
-  </div>
-</div>
-
-
-<div class="screen" id="s-quiz">
-  <div class="q-header">
-    <div class="q-meta">
-      <span class="q-step" id="q-phase">Situasi</span>
-      <span class="q-num" id="q-of">1 / 10</span>
+    <div id="spin-container" class="hidden">
+        <span class="tag" id="spin-label"></span>
+        <h2 id="spin-question"></h2>
+        <div id="spin-options"></div>
     </div>
-    <div class="prog"><div class="prog-f" id="q-prog" style="width:0%"></div></div>
-  </div>
-  <div class="q-body" id="q-body"></div>
-  <div class="q-nav">
-    <button class="btn-next" id="btn-next" onclick="nextQ()">Lanjut →</button>
-  </div>
+
+    <div id="result" class="hidden" style="text-align: center;">
+        <h2>Analisis Selesai</h2>
+        <div style="font-size: 4rem; font-weight: bold; color: #d9534f;" id="final-score">0</div>
+        <p id="feedback" style="font-size: 1.1rem; color: #555;"></p>
+        <a href="https://wa.me/628123456789?text=Saya%20ingin%20konsultasi%20hasil%20kuis%20saya" 
+           style="background: #25d366; color: white; padding: 15px 25px; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 20px; font-weight: bold;">
+           Konsultasi Solusi Syariah
+        </a>
+    </div>
 </div>
-
-
-<div class="screen" id="s-result">
-  <div class="result-wrap" id="result-wrap"></div>
-</div>
-
 
 <script>
-/* ══════════════════════════════════════
-  EDIT INFO KAMU DI SINI
-══════════════════════════════════════ */
-const AGENT = {
-  name:    "Nama Kamu",
-  role:    "Konsultan Asuransi",
-  photo:   "",                     // URL foto (kosong = pakai inisial)
-  wa:      "628XXXXXXXXXX",       // 62 + nomor tanpa 0
-};
-/* ══════════════════════════════════════ */
+    const spinData = {
+        parent: [
+            { stage: "Situation", q: "Berapa orang yang bergantung pada penghasilan Anda saat ini?", a: [{t: "1-2 Orang", s: 10}, {t: "3-5 Orang", s: 20}, {t: "Lebih dari 5", s: 30}] },
+            { stage: "Problem", q: "Jika 'keran' gaji berhenti, berapa lama tabungan Anda bisa menghidupi mereka?", a: [{t: "Kurang dari 3 bulan", s: 40}, {t: "6 bulan", s: 20}, {t: "Sudah ada dana darurat 1 tahun", s: 5}] },
+            { stage: "Implication", q: "Jika tabungan habis, biaya mana yang terpaksa Anda 'korbankan'?", a: [{t: "Dana Pendidikan Anak", s: 30}, {t: "Gaya Hidup/Cicilan", s: 10}, {t: "Aset Properti", s: 20}] },
+            { stage: "Need-payoff", q: "Seberapa penting memiliki dana instan yang menjamin sekolah anak tetap jalan apapun risikonya?", a: [{t: "Sangat Penting", s: 0}, {t: "Cukup Penting", s: 5}] }
+        ],
+        single: [
+            { stage: "Situation", q: "Berapa persen dari gaji Anda yang dialokasikan untuk gaya hidup & cicilan?", a: [{t: "> 50%", s: 20}, {t: "30-50%", s: 10}, {t: "< 30%", s: 5}] },
+            { stage: "Problem", q: "Siapa yang akan membayar cicilan tersebut jika Anda sakit dan tak bisa bekerja?", a: [{t: "Orang Tua/Tabungan", s: 40}, {t: "Kantor", s: 20}, {t: "Sudah ada asuransi", s: 5}] },
+            { stage: "Implication", q: "Jika aset habis untuk biaya RS, apakah Anda siap memulai karier dari nol lagi?", a: [{t: "Sangat Tidak Siap", s: 30}, {t: "Mungkin Terpaksa", s: 10}] },
+            { stage: "Need-payoff", q: "Inginkah Anda memiliki proteksi pendapatan agar gaya hidup tetap terjaga saat risiko terjadi?", a: [{t: "Ya, Tentu", s: 0}, {t: "Lihat nanti", s: 5}] }
+        ],
+        senior: [
+            { stage: "Situation", q: "Berapa banyak aset produktif yang sudah Anda siapkan untuk hari tua?", a: [{t: "Sedang membangun", s: 20}, {t: "Sudah cukup banyak", s: 10}] },
+            { stage: "Problem", q: "Apakah biaya penyakit kritis di masa tua berpotensi menggerus aset warisan tersebut?", a: [{t: "Sangat Berisiko", s: 40}, {t: "Kecil kemungkinannya", s: 10}] },
+            { stage: "Implication", q: "Seberapa besar beban pajak/biaya balik nama yang akan ditanggung ahli waris Anda nanti?", a: [{t: "Belum tahu/Besar", s: 30}, {t: "Sudah dihitung", s: 5}] },
+            { stage: "Need-payoff", q: "Seberapa berharga memiliki sistem yang menjaga aset Anda tetap utuh sampai ke tangan anak cucu?", a: [{t: "Sangat Berharga", s: 0}, {t: "Biasa saja", s: 5}] }
+        ]
+    };
 
-/* ─── PERTANYAAN — dikelompokkan dengan metode TAHU ─── */
-const QS = [
-  // ── T: TANYA Situasi ──────────────────────────────
-  {
-    phase: "T — Tanya Situasi",
-    emoji: "👨‍👩‍👧‍👦",
-    text: "Siapa saja yang bergantung pada penghasilanmu?",
-    hint: "Ini menentukan seberapa besar keluargamu membutuhkan perlindungan.",
-    key: "tanggungan",
-    opts: [
-      { t: "Saya sendiri, belum ada tanggungan", v: "sendiri" },
-      { t: "Pasangan saja, belum punya anak", v: "pasangan" },
-      { t: "Pasangan dan anak-anak", v: "keluarga" },
-      { t: "Pasangan, anak, dan orang tua / saudara", v: "besar" },
-    ]
-  },
-  {
-    phase: "T — Tanya Situasi",
-    emoji: "💼",
-    text: "Dari mana penghasilanmu berasal?",
-    hint: "Status pekerjaan menentukan jenis proteksi yang paling kamu butuhkan.",
-    key: "pekerjaan",
-    opts: [
-      { t: "Karyawan tetap — gaji masuk tiap bulan", v: "karyawan" },
-      { t: "Wirausaha / freelance — penghasilan tidak tetap", v: "wiraswasta" },
-      { t: "Keduanya — kerja dan punya usaha sendiri", v: "keduanya" },
-      { t: "Pensiunan — sudah tidak aktif bekerja", v: "pensiun" },
-      { t: "Saat ini belum bekerja / sedang transisi", v: "belum" },
-    ]
-  },
-  {
-    phase: "T — Tanya Situasi",
-    emoji: "🛡️",
-    text: "Proteksi apa yang sudah kamu miliki sekarang?",
-    hint: "Agar kita tahu bagian mana yang masih kosong dan perlu diisi.",
-    key: "proteksi",
-    opts: [
-      { t: "Sudah punya asuransi jiwa + kesehatan + sakit kritis", v: "lengkap" },
-      { t: "Baru punya BPJS dan / atau asuransi dari kantor", v: "dasar" },
-      { t: "Hanya BPJS saja", v: "bpjs" },
-      { t: "Belum punya asuransi apapun", v: "kosong" },
-    ]
-  },
+    let activePath = [];
+    let step = 0;
+    let riskScore = 0;
 
-  // ── A: ANGKAT Masalah ──────────────────────────────
-  {
-    phase: "A — Angkat Masalah",
-    emoji: "💰",
-    text: "Kalau penghasilanmu tiba-tiba berhenti hari ini, berapa lama tabunganmu bisa bertahan?",
-    hint: "Ini mengukur seberapa rentan kondisi finansialmu saat ini.",
-    key: "darurat",
-    opts: [
-      { t: "Lebih dari 12 bulan — sangat aman", v: "aman" },
-      { t: "6–12 bulan — masih bisa nafas", v: "cukup" },
-      { t: "3–6 bulan — mulai khawatir", v: "tipis" },
-      { t: "Kurang dari 3 bulan — panik!", v: "kritis" },
-    ]
-  },
-  {
-    phase: "A — Angkat Masalah",
-    emoji: "🏥",
-    text: "Kalau kamu harus masuk rumah sakit dan butuh biaya besar — kamu bayar pakai apa?",
-    hint: "Biaya RS yang tidak ter-cover sering jadi penyebab tabungan habis seketika.",
-    key: "kesehatan",
-    opts: [
-      { t: "Tenang, sudah ada asuransi kesehatan yang cover", v: "aman" },
-      { t: "Pakai BPJS dan asuransi kantor — cukup untuk yang dasar", v: "dasar" },
-      { t: "Pakai tabungan — semoga cukup", v: "tabungan" },
-      { t: "Belum tahu harus dari mana", v: "bingung" },
-    ]
-  },
-  {
-    phase: "A — Angkat Masalah",
-    emoji: "🧬",
-    text: "Di keluargamu, adakah yang pernah kena kanker, jantung, stroke, atau diabetes?",
-    hint: "Riwayat keluarga adalah salah satu faktor risiko terbesar untuk penyakit kritis.",
-    key: "riwayat",
-    opts: [
-      { t: "Tidak ada riwayat penyakit berat di keluarga", v: "rendah" },
-      { t: "Ada 1 orang, tapi sudah sembuh", v: "sedang" },
-      { t: "Ada 2 orang atau lebih dengan penyakit berat", v: "tinggi" },
-      { t: "Saya sendiri sudah punya riwayat penyakit tertentu", v: "sangat_tinggi" },
-    ]
-  },
-
-  // ── H: HIDUPKAN Konsekuensi ──────────────────────────
-  {
-    phase: "H — Hidupkan Konsekuensi",
-    emoji: "🛏️",
-    text: "Bayangkan kamu harus berhenti kerja 1–2 tahun karena sakit keras. Keluargamu bertahan dari mana?",
-    hint: "Penyakit kritis tidak hanya mahal diobati — tapi juga membuat penghasilan berhenti total.",
-    key: "sakit_kritis",
-    opts: [
-      { t: "Ada asuransi sakit kritis yang cover penghasilan", v: "aman" },
-      { t: "Ada tabungan dan investasi yang cukup untuk itu", v: "cukup" },
-      { t: "Tabungan ada, tapi mungkin habis dalam beberapa bulan", v: "tipis" },
-      { t: "Jujur, ini yang paling saya khawatirkan", v: "rentan" },
-    ]
-  },
-  {
-    phase: "H — Hidupkan Konsekuensi",
-    emoji: "🎓",
-    text: "Kalau terjadi sesuatu pada kamu — siapa yang akan biayai pendidikan anak sampai selesai kuliah?",
-    hint: "Pendidikan anak sering terhenti ketika tulang punggung keluarga tidak ada.",
-    key: "pendidikan",
-    opts: [
-      { t: "Sudah ada tabungan / asuransi pendidikan khusus", v: "siap" },
-      { t: "Belum ada yang khusus, tapi tabungan mulai dikumpulkan", v: "proses" },
-      { t: "Belum mulai, rencananya nanti", v: "belum" },
-      { t: "Belum punya anak / tidak relevan", v: "skip" },
-    ]
-  },
-
-  // ── U: UNDANG Keputusan ───────────────────────────────
-  {
-    phase: "U — Undang Keputusan",
-    emoji: "📅",
-    text: "Sudah berapa lama kamu terpikir soal asuransi tapi belum mulai?",
-    hint: "Semakin lama menunda, semakin mahal premi dan semakin besar risiko yang tidak ter-cover.",
-    key: "tunda",
-    opts: [
-      { t: "Saya sudah punya proteksi yang cukup lengkap", v: "done" },
-      { t: "Baru-baru ini saja, kurang dari 3 bulan", v: "baru" },
-      { t: "Sudah cukup lama, 3 bulan – 1 tahun", v: "lama" },
-      { t: "Lebih dari 1 tahun, selalu tertunda", v: "sangat_lama" },
-    ]
-  },
-  {
-    phase: "U — Undang Keputusan",
-    emoji: "💬",
-    text: "Apa yang selama ini membuat kamu belum mulai?",
-    hint: "Tidak ada jawaban salah — ini membantu kami menyiapkan solusi yang paling sesuai.",
-    key: "hambatan",
-    opts: [
-      { t: "Belum ngerti produknya, bingung mulai dari mana", v: "info" },
-      { t: "Khawatir tidak sanggup bayar premi jangka panjang", v: "budget" },
-      { t: "Masih muda dan sehat, merasa belum butuh", v: "muda" },
-      { t: "Tidak percaya sama asuransi / susah klaim", v: "trust" },
-    ]
-  },
-];
-
-/* ─── STATE ─── */
-let curQ = 0, ans = {}, userName = "";
-
-/* ─── INIT ─── */
-function initAgent() {
-  const init = AGENT.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  document.getElementById('i-init').textContent = init;
-  document.getElementById('i-nm').textContent = AGENT.name;
-  document.getElementById('i-rl').textContent = AGENT.role;
-  if (AGENT.photo) {
-    document.getElementById('i-av').innerHTML = `<img src="${AGENT.photo}" alt="${AGENT.name}" onerror="this.parentElement.innerHTML='${init}'">`;
-  }
-}
-
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-}
-
-function startQuiz() {
-  userName = document.getElementById('u-name').value.trim();
-  curQ = 0; ans = {};
-  showScreen('s-quiz');
-  renderQ();
-}
-
-function renderQ() {
-  const q = QS[curQ];
-  const pct = Math.round((curQ / QS.length) * 100);
-
-  document.getElementById('q-phase').textContent = q.phase;
-  document.getElementById('q-of').textContent = `${curQ+1} / ${QS.length}`;
-  document.getElementById('q-prog').style.width = pct + '%';
-
-  const saved = ans[q.key];
-
-  document.getElementById('q-body').innerHTML = `
-    <div class="phase-tag">${q.phase}</div>
-    <span class="q-emoji">${q.emoji}</span>
-    <div class="q-text">${q.text}</div>
-    <div class="q-hint">${q.hint}</div>
-    <div class="opts">
-      ${q.opts.map((o,i) => `
-        <div class="opt${saved===o.v?' sel':''}" onclick="pick(this,'${q.key}','${o.v}')">
-          <div class="opt-circle"><div class="opt-dot"></div></div>
-          <div class="opt-txt">${o.t}</div>
-        </div>`).join('')}
-    </div>
-  `;
-
-  const btn = document.getElementById('btn-next');
-  btn.className = 'btn-next' + (saved ? ' on' : '');
-  btn.textContent = curQ < QS.length-1 ? 'Lanjut →' : 'Lihat Prioritas Asuransimu 🎯';
-}
-
-function pick(el, key, val) {
-  document.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
-  el.classList.add('sel');
-  ans[key] = val;
-  const btn = document.getElementById('btn-next');
-  btn.classList.add('on');
-}
-
-function nextQ() {
-  if (!ans[QS[curQ].key]) return;
-  if (curQ < QS.length-1) { curQ++; renderQ(); window.scrollTo(0,0); }
-  else buildResult();
-}
-
-/* ═══════════════════════════════
-RESULT ENGINE — Hibrida Tangga + Ceklist
-═══════════════════════════════ */
-function buildResult() {
-  const a = ans;
-
-  /* ─── 1. Derive Profile (Target Market) ─── */
-  let profil = 'umum';
-  if (a.pekerjaan === 'pensiun') { profil = 'pensiunan'; }
-  else if (a.tanggungan === 'keluarga' || a.tanggungan === 'besar') { profil = 'pemberi_nafkah'; }
-  else if (a.tanggungan === 'sendiri') { profil = 'single_produktif'; }
-  else if (a.tanggungan === 'pasangan' && a.pekerjaan === 'belum') { profil = 'dewasa_no_income'; }
-  else if (a.pendidikan != 'skip' && (a.tanggungan === 'keluarga' || a.tanggungan === 'besar')) { profil = 'orang_tua'; } // Untuk dana pendidikan
-
-  /* ─── 2. Definisikan Skor Fundamental (Logika Tangga) ─── */
-  const ladderScores = {
-    jaminan_kes_dasar: 50,    // Level 1: Paling bawah
-    jaminan_kes_kompre: 45,   // Level 1: Komprehensif
-    proteksi_income: 40,      // Level 2: Pendapatan
-    asuransi_kes: 35,         // Level 3: RS Besar
-    tujuan_keu: 30,           // Level 4: Pensiun/Pendidikan
-    waris: 25,                // Level 5: Paling atas
-  };
-
-  /* ─── 3. Definisikan Skor Urgensi Profil (Logika Ceklist) ─── */
-  const checklistUrgency = {
-    merah: 10,  // Prioritas Utama
-    hijau: 5,   // Sesuai Kebutuhan
-    kuning: 2,  // Generation Wealth
-    biru: 3,    // Fungsi Akumulasi
-    hitam: 0,   // Tidak Perlu
-  };
-
-  /* ─── 4. Hitung Skor Akhir Hibrida ─── */
-  const scores = {
-    jaminan_kes_dasar: 0,
-    jaminan_kes_kompre: 0,
-    kritis: 0,
-    jiwa: 0,
-    harian: 0,
-    cacat: 0,
-    kecelakaan: 0,
-    pendidikan: 0,
-    pensiun: 0,
-    waris: 0,
-  };
-
-  // -- Jaminan Kesehatan (Dasar vs Kompre) --
-  // Merah untuk semua profil
-  scores.jaminan_kes_dasar = ladderScores.jaminan_kes_dasar + (checklistUrgency.merah * 2);
-  scores.jaminan_kes_kompre = ladderScores.jaminan_kes_kompre + (checklistUrgency.merah * 2);
-
-  // -- Proteksi Income (Sakit Kritis, Jiwa, Harian, Cacat, Kecelakaan) --
-  const inc = checklistUrgency;
-  if (profil === 'pemberi_nafkah') {
-    scores.kritis = ladderScores.proteksi_income + (inc.merah * 2);
-    scores.jiwa = ladderScores.proteksi_income + (inc.merah * 2);
-    scores.harian = ladderScores.proteksi_income + (inc.merah * 2);
-    scores.cacat = ladderScores.proteksi_income + (inc.merah * 2);
-    scores.kecelakaan = ladderScores.proteksi_income + (inc.merah * 2);
-  } else if (profil === 'pensiunan') {
-    scores.kritis = ladderScores.proteksi_income + (inc.merah * 2);
-    scores.harian = ladderScores.proteksi_income + (inc.merah * 2);
-    scores.cacat = ladderScores.proteksi_income + (inc.hijau * 2); // Contoh penyesuaian
-    scores.kecelakaan = ladderScores.proteksi_income + (inc.hijau * 2);
-  } else if (profil === 'single_produktif') {
-    scores.kritis = ladderScores.proteksi_income + (inc.hijau * 2); // Sesuai Ceklist
-    scores.jiwa = ladderScores.proteksi_income + (inc.hijau * 2);
-    scores.harian = ladderScores.proteksi_income + (inc.merah * 2); // Kebutuhan dasar
-    scores.cacat = ladderScores.proteksi_income + (inc.hijau * 2);
-    scores.kecelakaan = ladderScores.proteksi_income + (inc.hijau * 2);
-  } else if (profil === 'dewasa_no_income') {
-    scores.jiwa = ladderScores.proteksi_income + (inc.hijau * 2);
-    scores.cacat = ladderScores.proteksi_income + (inc.hijau * 2);
-    scores.kecelakaan = ladderScores.proteksi_income + (inc.hijau * 2);
-  }
-
-  // -- Fungsi Akumulasi (Pensiun, Pendidikan) --
-  const func = checklistUrgency;
-  if (profil === 'pemberi_nafkah' || profil === 'single_produktif') {
-    scores.pensiun = ladderScores.tujuan_keu + (func.biru * 2);
-    scores.pendidikan = ladderScores.tujuan_keu + (func.biru * 2);
-  }
-
-  // -- Generation Wealth (Waris) --
-  if (profil === 'dewasa_no_income') {
-    scores.waris = ladderScores.waris + (inc.kuning * 2);
-  }
-
-  /* ─── 5. Finalisasi Urutan & Pesan Kustomisasi ─── */
-  const infoMap = {
-    jaminan_kes_dasar: {
-      icon: "🏥",
-      label: "Jaminan Kesehatan Dasar",
-      why: () => {
-        if (profil === 'pemberi_nafkah') return "Prioritas Merah (Urutan 1). Sebagai pemberi nafkah, tameng dasar ini (seperti BPJS) wajib dimiliki duluan sebelum sistem perlindungan lain bisa dibangun.";
-        if (profil === 'pensiunan') return "Prioritas Merah. Sangat krusial untuk melindungi tabungan masa tuamu dari biaya pengobatan dasar.";
-        return "Prioritas Merah (Urutan 1). Jaminan dasar kesehatan adalah tameng pertama yang wajib dimiliki oleh semua orang.";
-      }
-    },
-    jaminan_kes_kompre: {
-      icon: "☂️",
-      label: "Jaminan Kesehatan Komprehensif",
-      why: () => {
-        if (profil === 'single_produktif') return "Prioritas Merah. Kamu mandiri, kesehatan adalah aset utama. Tameng komprehensif (seperti asuransi swasta) disarankan untuk melindungi tabunganmu dari biaya RS besar.";
-        if (profil === 'pensiunan') return "Prioritas Merah. Memperluas cakupan dasar untuk rawat inap yang lebih fleksibel dan nyaman di RS pilihan.";
-        return "Prioritas Merah (Urutan 1). Melengkapi tameng dasar untuk memastikan kamu bisa memilih RS dan kamar terbaik saat sakit berat.";
-      }
-    },
-    kritis: {
-      icon: "🧬",
-      label: "Asuransi Sakit Kritis",
-      why: () => {
-        if (profil === 'pemberi_nafkah') return "Level 2 (Proteksi Income). Prioritas merah karena risiko sakit kritis adalah risiko terbesar untuk pendapatan keluargamu. Ini harus ada tepat setelah tameng kesehatan dasar.";
-        if (profil === 'pensiunan') return "Prioritas Merah. Perlindungan terhadap biaya hidup jangka panjang dan non-medis yang sangat mahal dari penyakit berat.";
-        return "Level 2 (Proteksi Income). Menjamin ketersediaan dana hidup jangka panjang saat kamu tidak bisa bekerja akibat penyakit berat.";
-      }
-    },
-    jiwa: {
-      icon: "Ji",
-      label: "Asuransi Jiwa",
-      why: () => {
-        if (profil === 'pemberi_nafkah') return "Level 2 (Proteksi Income). Prioritas merah. Ini bukan untukmu, tapi untuk mereka yang bergantung padamu agar hidupnya tetap terjamin jika kamu tidak ada.";
-        return "Level 2 (Proteksi Income). Sesuai kebutuhan untuk melunasi utang atau menjamin masa depan keluarga.";
-      }
-    },
-    pensiun: {
-      icon: "💰",
-      label: "Dana Pensiun",
-      why: () => "Level 4 (Tujuan Keuangan). Prioritas utama untuk menjamin masa tua yang mandiri, seharusnya disiapkan di atas pendidikan anak.";
-    },
-    pendidikan: {
-      icon: "🎓",
-      label: "Dana Pendidikan",
-      why: () => {
-        if (a.pendidikan === 'skip') return "- Tidak Relevan -";
-        if (profil === 'pemberi_nafkah') return "Level 4 (Tujuan Keuangan). Memastikan pendidikan anak terjamin, tetapi perlindungan income-mu adalah tameng pertama.";
-        return "Level 4 (Tujuan Keuangan). Kebutuhan masa depan anak yang harus direncanakan dengan hati-hati.";
-      }
-    },
-    waris: {
-      icon: "Legacy",
-      label: "Perencanaan Waris",
-      why: () => {
-        if (profil === 'dewasa_no_income') return "Level 5 (Paling Atas). Sesuai kebutuhan untuk mempersiapkan warisan, tetapi perlindungan kesehatan keluargamu tameng pertama.";
-        return "Level 5 (Paling Atas). Sesuai kebutuhan untuk mempersiapkan warisan atau melunasi utang.";
-      }
+    function initSpin(profile) {
+        activePath = spinData[profile];
+        document.getElementById('step-start').classList.add('hidden');
+        document.getElementById('spin-container').classList.remove('hidden');
+        renderStep();
     }
-  };
 
-  const sorted = Object.entries(scores)
-    .filter(([,v]) => v > 0)
-    .sort((a,b) => b[1]-a[1])
-    .slice(0,3);
+    function renderStep() {
+        const data = activePath[step];
+        document.getElementById('spin-label').innerText = data.stage;
+        document.getElementById('spin-question').innerText = data.q;
+        const optDiv = document.getElementById('spin-options');
+        optDiv.innerHTML = '';
+        
+        data.a.forEach(ans => {
+            const b = document.createElement('button');
+            b.className = 'btn';
+            b.innerText = ans.t;
+            b.onclick = () => {
+                riskScore += ans.s;
+                step++;
+                if(step < activePath.length) renderStep(); else finish();
+            };
+            optDiv.appendChild(b);
+        });
+        document.getElementById('bar').style.width = ((step+1)/activePath.length)*100 + '%';
+    }
 
-  const cardClass = ['p1','p2','p3'];
-  const prioHtml = sorted.map(([key,], i) => {
-    const info = infoMap[key];
-    if (info.label === "Jaminan Kesehatan Dasar" || info.label === "Jaminan Kesehatan Komprehensif") { ladder = 'Tameng Kesehatan'; }
-    else if (LadderScores.proteksi_income === scores[key]) { ladder = 'Pelindung Income'; }
-    else if (scores[key] === ladderScores.tujuan_keu) { ladder = 'Tujuan Keu'; }
-    else if (scores[key] === ladderScores.waris) { ladder = 'Wealth Planning'; }
-    else { ladder = 'Tameng Kesehatan'; }
-    return `
-      <div class="prio-card ${cardClass[i]}">
-        <div class="prio-badge">
-          <div class="prio-num">${i+1}</div>
-          <div class="prio-now">${i===0?'Utama':i===1?'Kedua':'Ketiga'}</div>
-        </div>
-        <div class="prio-content">
-          <span class="prio-icon">${info.icon}</span>
-          <div class="prio-title">${info.label}</div>
-          <div class="prio-why">${info.why()}</div>
-        </div>
-      </div>`;
-  }).join('');
-
-  /* ─── Ringkasan Situasi (Pill Colors Update) ─── */
-  const pLabel = { lengkap:'Sudah Cukup Lengkap', dasar:'BPJS + Kantor', bpjs:'BPJS Saja', kosong:'Belum Ada' };
-  const pPill  = { lengkap:'pill-g', dasar:'pill-y', bpjs:'pill-y', kosong:'pill-r' };
-  const dPill  = { aman:'pill-g', cukup:'pill-y', tipis:'pill-r', kritis:'pill-r' };
-  const tLabel = { sendiri:'Sendiri', pasangan:'Pasangan', keluarga:'Pasangan + Anak', besar:'Keluarga Besar' };
-  const dLabel = { aman:'> 12 Bulan', cukup:'6–12 Bulan', tipis:'3–6 Bulan', kritis:'< 3 Bulan' };
-
-  /* ─── WA Message ─── */
-  const name = userName || "Teman";
-  const topPrio = sorted[0] ? infoMap[sorted[0][0]].label : '-';
-  const hambatanLabel = { info:'Butuh informasi lebih jelas', budget:'Khawatir soal budget', muda:'Merasa belum butuh', trust:'Kurang percaya dengan asuransi' };
-  const waMsg = encodeURIComponent( `Halo ${AGENT.name}! 👋\n\n`+ `Saya baru selesai mengisi kuis dan ingin konsultasi lebih lanjut.\n\n`+ `*Nama:* ${name}\n`+ `*Tanggungan:* ${tLabel[a.tanggungan]||'-'}\n`+ `*Proteksi saat ini:* ${pLabel[a.proteksi]||'-'}\n`+ `*Prioritas utama:* ${topPrio}\n`+ `*Yang jadi hambatan:* ${hambatanLabel[a.hambatan]||'-'}\n\n`+ `Bisa bantu saya menemukan solusi yang paling sesuai? 🙏` );
-  const waUrl = `https://wa.me/${AGENT.wa}?text=${waMsg}`;
-  const init = AGENT.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  const avHtml = AGENT.photo ? `<img src="${AGENT.photo}" alt="${AGENT.name}" onerror="this.parentElement.textContent='${init}'">` : init;
-  const disp = userName || "Kamu";
-
-  document.getElementById('result-wrap').innerHTML = `
-    <div class="result-top">
-      <div class="r-greeting">Hasil untuk ${disp}</div>
-      <div class="r-title">Ini urutan asuransi yang paling kamu butuhkan</div>
-      <div class="r-sub">Berdasarkan profil keluargamu dan urutan fundamental Tangga Proteksi.</div>
-    </div>
-    <div class="result-section">
-      <div class="sec-label">Prioritas Asuransimu</div>
-      <div class="prio-list">${prioHtml}</div>
-    </div>
-    <div class="result-section">
-      <div class="sec-label" style="margin-top:4px;">Ringkasan Situasimu</div>
-      <div class="summary-box">
-        <div class="sum-row"> <span class="sum-key">Tanggungan</span> <span class="sum-val">${tLabel[a.tanggungan]||'-'}</span> </div>
-        <div class="sum-row"> <span class="sum-key">Profil Target Market</span> <span class="pill pill-b">${profil.replace('_',' ')}</span> </div>
-        <div class="sum-row"> <span class="sum-key">Proteksi sekarang</span> <span class="pill ${pPill[a.proteksi]||'pill-y'}">${pLabel[a.proteksi]||'-'}</span> </div>
-        <div class="sum-row"> <span class="sum-key">Dana darurat</span> <span class="pill ${dPill[a.darurat]||'pill-y'}">${dLabel[a.darurat]||'-'}</span> </div>
-      </div>
-    </div>
-    <div class="wa-box">
-      <div class="wa-agent">
-        <div class="wa-av">${avHtml}</div>
-        <div> <div class="wa-nm">${AGENT.name}</div> <div class="wa-rl">${AGENT.role}</div> </div>
-      </div>
-      <div class="wa-body">
-        <div class="wa-msg">Mau tahu produk yang paling cocok untuk prioritasmu? Konsultasi gratis, santai, tanpa tekanan — langsung via WhatsApp.</div>
-        <a href="${waUrl}" target="_blank" class="btn-wa">
-          <svg class="wa-ico" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Konsultasi Gratis via WhatsApp </a>
-      </div>
-    </div>
-    <button class="btn-again" onclick="retry()">↺ Ulangi Kuis</button>
-    <div class="tip">Bagikan kuis ini ke keluarga atau teman agar mereka juga tahu prioritas asuransi mereka 💙</div>
-  `;
-  showScreen('s-result');
-}
-
-function retry() {
-  curQ = 0; ans = {}; userName = "";
-  document.getElementById('u-name').value = '';
-  showScreen('s-intro');
-}
-
-initAgent();
+    function finish() {
+        document.getElementById('spin-container').classList.add('hidden');
+        document.getElementById('result').classList.remove('hidden');
+        
+        // Dalam kuis asuransi, skor tinggi = risiko tinggi
+        document.getElementById('final-score').innerText = riskScore + "%";
+        let msg = riskScore > 60 ? "Risiko finansial Anda sangat kritis. Anda butuh 'Jaring Pengaman' segera." : "Anda memiliki risiko moderat. Beberapa celah perlu ditutup agar lebih aman.";
+        document.getElementById('feedback').innerText = msg;
+    }
 </script>
 </body>
 </html>
