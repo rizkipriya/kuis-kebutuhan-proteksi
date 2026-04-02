@@ -355,8 +355,11 @@ body {
 
 .prio-body { flex:1; }
 .prio-icon { font-size:20px; display:block; margin-bottom:5px; }
-.prio-name { font-size:16px; font-weight:800; color:var(--ink); margin-bottom:5px; }
+.prio-name { font-size:16px; font-weight:800; color:var(--ink); margin-bottom:2px; }
+.prio-prod-name { font-size:12.5px; font-weight:600; color:var(--blue); margin-bottom:8px; display:inline-block; background:var(--blue-l); padding:3px 8px; border-radius:4px; }
 .prio-reason { font-size:12.5px; color:var(--ink2); line-height:1.65; }
+.prio-reason p { margin-bottom: 8px; }
+.prio-reason p:last-child { margin-bottom: 0; }
 
 /* CTA */
 .cta-block {
@@ -443,7 +446,6 @@ body {
   </div>
 </div>
 
-
 <div class="screen" id="s-quiz">
   <div class="quiz-bar">
     <div class="quiz-bar-top">
@@ -458,7 +460,6 @@ body {
   </div>
 </div>
 
-
 <div class="screen" id="s-result">
   <div class="result-body" id="result-body"></div>
 </div>
@@ -469,11 +470,11 @@ body {
    EDIT INFO KAMU DI SINI
 ══════════════════════════════ */
 const AGENT = {
-  name:  "Rizki Priya",
+  name:  "Mimi",
   role:  "Agen Asuransi Allianz Syariah",
   photo: "",               // URL foto — isi dengan URL foto kamu
-  wa:    "628XXXXXXXXXX",  // Ganti dengan nomor WA kamu: 62 + nomor tanpa 0
-  story: `Saya dulu skeptis dengan asuransi — sampai anak saya masuk RS dan harus bayar Rp 20 juta dari kantong sendiri. Setelah buka Allianz, anak-anak sakit bergantian dan total tagihan Rp 90 juta di-cover penuh. Pengalaman itu yang membuat saya jadi agen Allianz sejak 2023.`,
+  wa:    "6281234567890",  // Ganti dengan nomor WA kamu: 62 + nomor tanpa 0
+  story: `Saya dulu skeptis dengan asuransi — sampai anak saya masuk RS dan harus bayar Rp 20 juta dari kantong sendiri. Setelah buka Allianz, anak-anak sakit bergantian dan total tagihan Rp 90 juta di-cover penuh. Pengalaman itu yang membuat saya jadi agen Allianz.`,
   quote: `"Baru kali ini penjelasan asuransi terasa mudah dimengerti dan tidak bikin bingung."`,
   quoteFrom: "Prospek di Jakarta",
 };
@@ -687,7 +688,7 @@ let activeQs = [];
           <div class="story-sig-av">${avHtmlSmall}</div>
           <div>
             <div class="story-sig-name">${AGENT.name}</div>
-            <div class="story-sig-role">${AGENT.role} · Sejak 2023</div>
+            <div class="story-sig-role">${AGENT.role}</div>
           </div>
         </div>
       </div>
@@ -812,23 +813,35 @@ function buildResult() {
 
   const sorted = Object.entries(sc).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,3);
 
-  /* ── Info per jenis asuransi (SOFT SELLING COPY) ── */
+  /* ── Info per jenis asuransi (EDUKASI ORANG AWAM) ── */
   const INFO = {
     legacymax: {
-      icon:"☂️", name:"AlliSya LegacyMax",
-      reason: () => `Sebagai bentuk ikhtiar cinta untuk keluarga, produk ini memastikan mereka menerima peninggalan (warisan) maksimal yang nilainya bisa terus bertambah melawan inflasi. Menariknya, jika kamu terus diberikan kesehatan hingga akhir masa perlindungan, kontribusimu bisa dikembalikan untuk dinikmati di masa tuamu.`
+      icon: "☂️", 
+      type: "Asuransi Jiwa & Warisan",
+      product: "Rekomendasi Produk: AlliSya LegacyMax",
+      reason: () => `<p><strong>Kenapa butuh ini?</strong> Kalau pencari nafkah tiba-tiba tutup usia, cicilan rumah, utang, dan biaya sekolah anak tidak otomatis lunas. Keluarga butuh "uang kaget" yang besar supaya kehidupan mereka tidak hancur berantakan.</p>
+      <p><strong>Kenapa AlliSya LegacyMax?</strong> Produk ini memastikan keluargamu menerima uang warisan yang sangat besar. Kerennya, nilai uang ini otomatis bertambah 10% setiap 10 tahun (bisa nambah sampai 50%) tanpa kamu harus bayar premi lebih! Dan kalau kamu panjang umur dan sehat terus, uang preminya bisa dicairkan buat masa tuamu.</p>`
     },
     ci_hasanah: {
-      icon:"🧬", name:"AlliSya CI Hasanah",
-      reason: () => `Untuk menjaga tabunganmu agar tidak habis jika terjadi risiko sakit berat, produk ini memberikan santunan tunai sebagai pengganti penghasilan selama masa pemulihan. Kabar baiknya, ada fitur Hasanah Cash di mana kontribusimu bisa dikembalikan utuh 100% di tahun ke-20 jika kamu senantiasa sehat.`
+      icon: "🧬", 
+      type: "Asuransi Sakit Kritis",
+      product: "Rekomendasi Produk: AlliSya CI Hasanah",
+      reason: () => `<p><strong>Kenapa butuh ini?</strong> Kalau kita sakit parah seperti kanker atau jantung, BPJS memang bayar rumah sakit. Tapi, BPJS tidak bisa mengganti <em>gajimu yang hilang</em> karena kamu harus istirahat berbulan-bulan di rumah.</p>
+      <p><strong>Kenapa AlliSya CI Hasanah?</strong> Produk ini mentransfer sejumlah uang tunai langsung ke rekening pribadimu saat kamu didiagnosis sakit kritis. Uang ini bebas dipakai buat bayar cicilan atau kebutuhan sehari-hari. Hebatnya lagi, kalau kamu sehat-sehat aja sampai tahun ke-20, semua uang yang udah kamu setor bakal <strong>dibalikin 100%</strong>. Hitung-hitung menabung!</p>`
     },
     tasbih: {
-      icon:"🕋", name:"Allianz Tasbih",
-      reason: () => `Untuk niat suci seperti Haji atau Umroh, produk ini menemanimu dengan fasilitas Dana Tahapan yang cair terjadwal. Selain membantu mengumpulkan dana keberangkatan, kamu mendapat ketenangan ekstra dengan perlindungan jiwa ganda jika risiko terjadi saat beribadah di Tanah Suci.`
+      icon: "🕋", 
+      type: "Tabungan Masa Depan / Haji",
+      product: "Rekomendasi Produk: Allianz Tasbih",
+      reason: () => `<p><strong>Kenapa butuh ini?</strong> Impian besar seperti berangkat Haji, Umroh, atau menyiapkan dana pasti buat masa depan butuh tempat menabung yang aman dan gak gampang terpakai buat hal lain.</p>
+      <p><strong>Kenapa Allianz Tasbih?</strong> Ini adalah tabungan asuransi yang akan cair sesuai jadwal buat wujudin impianmu. Sekaligus, ada proteksi jiwa super ganda: kalau amit-amit terjadi risiko tutup usia saat kamu lagi ibadah di Tanah Suci, keluarga akan mendapat uang santunan 2 kali lipat!</p>`
     },
     kesehatan: {
-      icon:"🏥", name:"Asuransi Kesehatan Syariah",
-      reason: () => `Kartu kesehatan ini bekerja berdasarkan prinsip tolong-menolong (Ta'awun), memastikan biaya rawat inapmu ter-cover dengan baik. Kamu bisa fokus sepenuhnya pada proses kesembuhan tanpa khawatir membebani keuangan keluarga.`
+      icon: "🏥", 
+      type: "Asuransi Kesehatan (Rawat Inap)",
+      product: "Kartu Kesehatan Syariah",
+      reason: () => `<p><strong>Kenapa butuh ini?</strong> Sekali masuk rumah sakit swasta, biayanya bisa puluhan juta dan langsung menghabiskan tabungan yang sudah kamu kumpulkan bertahun-tahun.</p>
+      <p><strong>Solusinya:</strong> Kartu kesehatan ini akan membayarkan tagihan rumah sakitmu menggunakan prinsip tolong-menolong (Syariah). Jadi kamu bisa fokus cepat sembuh, pilih rumah sakit yang nyaman, dan tabungan utamamu tetap aman tak tersentuh.</p>`
     },
   };
 
@@ -841,7 +854,7 @@ function buildResult() {
   const story = `
     <p>Kamu adalah seseorang yang <span class="hl">${tL[a.tanggungan]||''}</span>, bekerja sebagai <span class="hl">${kL[a.kerja]||''}</span>.</p>
     <p>Untuk biaya rumah sakit, kondisimu saat ini <span class="hl">${rsL[a.rs]||''}</span>. Dan jika harus berhenti bekerja karena sakit keras, kamu <span class="hl">${critL[a.kritis]||''}</span>.</p>
-    <p>Yang paling membuatmu khawatir adalah <span class="hl">${takutL[a.takut]||''}</span>.</p>`;
+    <p>Yang paling membuatmu khawatir adalah risiko <span class="hl">${takutL[a.takut]||''}</span>.</p>`;
 
   /* ── Celah ── */
   const gaps = [];
@@ -885,7 +898,8 @@ function buildResult() {
         </div>
         <div class="prio-body">
           <span class="prio-icon">${info.icon}</span>
-          <div class="prio-name">${info.name}</div>
+          <div class="prio-name">${info.type}</div>
+          <div class="prio-prod-name">${info.product}</div>
           <div class="prio-reason">${info.reason()}</div>
         </div>
       </div>`;
@@ -906,7 +920,7 @@ function buildResult() {
     pasangan:  "Bisa dijadwalkan ngobrol bertiga dengan pasangan saya?",
   };
 
-  const topPrio = sorted[0] ? INFO[sorted[0][0]].name : '-';
+  const topPrio = sorted[0] ? INFO[sorted[0][0]].type : '-';
 
   /* ── WA message (casual) ── */
   const waMsg = encodeURIComponent(
@@ -949,7 +963,7 @@ function buildResult() {
     </div>
 
     <div class="r-section">
-      <div class="r-sec-title">Rekomendasi Produk Syariah Terbaikmu</div>
+      <div class="r-sec-title">Rekomendasi Solusi Syariah Terbaikmu</div>
       <div class="prio-cards">${prioHtml}</div>
     </div>
 
@@ -990,7 +1004,7 @@ function buildResult() {
     </div>
 
     <button class="btn-retry" onclick="retry()">↺ Ulangi Kuis</button>
-    <div class="result-tip">Bagikan kuis ini ke keluarga atau teman agar mereka juga tahu prioritas asuransi mereka 💙</div>
+    <div class="result-tip">Bagikan kuis ini ke keluarga atau teman agar mereka juga tahu prioritas perlindungan mereka 💙</div>
   `;
 
   show('s-result');
