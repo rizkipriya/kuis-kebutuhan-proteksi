@@ -182,9 +182,91 @@ body {
 .btn-next.on:hover { background:var(--blue); }
 .btn-next.on:active { opacity:.88; }
 
-/* ═══════════════════
-   RESULT
-═══════════════════ */
+/* Agent story box */
+.agent-story {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 16px;
+  margin-bottom: 18px;
+  position: relative;
+}
+.story-quote-mark {
+  font-size: 36px; line-height: 1;
+  color: var(--blue); opacity: .15;
+  font-family: Georgia, serif;
+  position: absolute; top: 8px; left: 14px;
+}
+.story-body {
+  font-size: 13px; color: var(--ink2);
+  line-height: 1.75; padding-left: 4px;
+  font-style: italic;
+}
+.story-body strong { color: var(--ink); font-style: normal; font-weight: 700; }
+.story-sig {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.story-sig-av {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--blue-l);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--blue);
+  overflow: hidden; flex-shrink: 0;
+  border: 1.5px solid var(--line);
+}
+.story-sig-av img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.story-sig-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.story-sig-role { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+
+/* Social proof */
+.social-proof {
+  background: var(--blue-l);
+  border: 1px solid #c5d9ec;
+  border-radius: var(--r);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.sp-icon { font-size: 20px; flex-shrink: 0; }
+.sp-quote { font-size: 12.5px; color: var(--blue); font-style: italic; line-height: 1.65; }
+.sp-from { font-size: 11px; color: var(--ink3); margin-top: 4px; font-style: normal; }
+
+/* Steps after WA */
+.next-steps {
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: var(--r); overflow: hidden; margin-bottom: 8px;
+}
+.ns-title {
+  padding: 12px 14px 10px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--ink3); border-bottom: 1px solid var(--line);
+}
+.ns-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 11px 14px; border-bottom: 1px solid var(--line);
+}
+.ns-row:last-child { border-bottom: none; }
+.ns-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--blue-l); color: var(--blue);
+  font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.ns-text { font-size: 12.5px; color: var(--ink2); line-height: 1.5; }
+.ns-text strong { font-weight: 600; color: var(--ink); }
+
+/* Urgency note */
+.urgency-note {
+  background: #fffbf0; border: 1px solid #f0d070;
+  border-radius: var(--r); padding: 12px 14px;
+  font-size: 12px; color: #7a5500; line-height: 1.65;
+  margin-top: 14px;
+}
+.urgency-note strong { font-weight: 700; }
 .result-body { flex:1; padding-bottom:48px; }
 
 .res-hero { background:var(--blue); padding:32px 22px 28px; }
@@ -195,19 +277,28 @@ body {
 .r-section { padding:24px 22px 0; }
 .r-sec-title { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--ink3); margin-bottom:14px; }
 
+/* Already protected path */
 .review-hero { background:var(--green); padding:32px 22px 28px; }
 .review-hero .res-label { color:rgba(255,255,255,.4); }
 .review-hero .res-name { color:white; }
 .review-hero .res-intro { color:rgba(255,255,255,.6); }
 
-.review-card, .story-card {
+.review-card {
   background:var(--white); border:1px solid var(--line);
   border-radius:var(--r); padding:18px; margin-bottom:10px;
 }
-.review-card p, .story-card p { font-size:13.5px; color:var(--ink2); line-height:1.8; }
+.review-card p { font-size:13.5px; color:var(--ink2); line-height:1.8; }
+
+/* Story */
+.story-card {
+  background:var(--white); border:1px solid var(--line);
+  border-radius:var(--r); padding:18px; margin-bottom:10px;
+}
+.story-card p { font-size:13.5px; color:var(--ink2); line-height:1.8; }
 .story-card p+p { margin-top:10px; }
 .hl { font-weight:700; color:var(--ink); }
 
+/* Gaps */
 .gap-list { display:flex; flex-direction:column; gap:8px; margin-bottom:8px; }
 .gap-item {
   background:var(--white); border:1px solid var(--line);
@@ -221,6 +312,7 @@ body {
 .gap-title { font-size:13px; font-weight:700; color:var(--ink); margin-bottom:3px; }
 .gap-desc { font-size:12px; color:var(--ink3); line-height:1.6; }
 
+/* Impact */
 .impact-box {
   background:var(--red-l); border:1.5px solid #e8b0ad;
   border-radius:var(--r); padding:18px; margin-bottom:8px;
@@ -236,6 +328,7 @@ body {
 .impact-text { font-size:12.5px; color:#7a1a16; line-height:1.6; }
 .impact-text strong { font-weight:700; }
 
+/* Prio */
 .prio-cards { display:flex; flex-direction:column; gap:10px; margin-bottom:8px; }
 .prio {
   background:var(--white); border:1.5px solid var(--line);
@@ -265,6 +358,7 @@ body {
 .prio-name { font-size:16px; font-weight:800; color:var(--ink); margin-bottom:5px; }
 .prio-reason { font-size:12.5px; color:var(--ink2); line-height:1.65; }
 
+/* CTA */
 .cta-block {
   margin:22px 22px 0; background:var(--white);
   border:1.5px solid var(--line); border-radius:var(--r); overflow:hidden;
@@ -322,21 +416,24 @@ body {
     </div>
     <div class="hero-tag">Kuis Gratis · 4 Menit</div>
     <div class="hero-h">Asuransi mana yang<br>harus kamu miliki<br><em>duluan?</em></div>
-    <div class="hero-sub">Banyak orang tidak tahu harus mulai dari mana. Kuis ini membantumu menemukan prioritas proteksi terbaik sesuai prinsip syariah.</div>
+    <div class="hero-sub">Banyak orang tidak tahu harus mulai dari mana — termasuk saya dulu. Kuis ini membantumu menemukan urutan prioritas perlindungan syariah yang paling tepat sesuai kondisimu.</div>
   </div>
   <div class="intro-body">
+
+    <div class="agent-story" id="agent-story-box"></div>
+    
     <div class="how-it-works">
       <div class="how-row">
         <div class="how-ic">🗣️</div>
-        <div><div class="how-t">Ceritakan kondisimu sekarang</div><div class="how-s">Keluarga, pekerjaan, dan tujuan finansialmu</div></div>
+        <div><div class="how-t">Ceritakan kondisimu sekarang</div><div class="how-s">Keluarga, pekerjaan, proteksi yang sudah ada</div></div>
       </div>
       <div class="how-row">
         <div class="how-ic">🔍</div>
-        <div><div class="how-t">Temukan celah yang rentan</div><div class="how-s">Bagian mana yang paling butuh perlindungan</div></div>
+        <div><div class="how-t">Temukan celah yang belum terlindungi</div><div class="how-s">Bagian mana yang paling butuh ikhtiar proteksi</div></div>
       </div>
       <div class="how-row">
         <div class="how-ic">🎯</div>
-        <div><div class="how-t">Dapatkan prioritas asuransimu</div><div class="how-s">Solusi syariah yang paling tepat untuk kondisimu</div></div>
+        <div><div class="how-t">Dapatkan prioritas asuransimu</div><div class="how-s">Solusi yang paling tepat untuk kondisimu dan kenapa</div></div>
       </div>
     </div>
     <div class="field-label">Nama kamu</div>
@@ -345,6 +442,7 @@ body {
     <div class="intro-fine">Gratis · Tidak ada data yang disimpan · Hasil keluar langsung</div>
   </div>
 </div>
+
 
 <div class="screen" id="s-quiz">
   <div class="quiz-bar">
@@ -360,23 +458,29 @@ body {
   </div>
 </div>
 
+
 <div class="screen" id="s-result">
   <div class="result-body" id="result-body"></div>
 </div>
+
 
 <script>
 /* ══════════════════════════════
    EDIT INFO KAMU DI SINI
 ══════════════════════════════ */
 const AGENT = {
-  name:  "Mimi", 
-  role:  "Agen Asuransi Allianz Syariah", 
-  photo: "",               
-  wa:    "6281234567890",  
+  name:  "Rizki Priya",
+  role:  "Agen Asuransi Allianz Syariah",
+  photo: "",               // URL foto — isi dengan URL foto kamu
+  wa:    "628XXXXXXXXXX",  // Ganti dengan nomor WA kamu: 62 + nomor tanpa 0
+  story: `Saya dulu skeptis dengan asuransi — sampai anak saya masuk RS dan harus bayar Rp 20 juta dari kantong sendiri. Setelah buka Allianz, anak-anak sakit bergantian dan total tagihan Rp 90 juta di-cover penuh. Pengalaman itu yang membuat saya jadi agen Allianz sejak 2023.`,
+  quote: `"Baru kali ini penjelasan asuransi terasa mudah dimengerti dan tidak bikin bingung."`,
+  quoteFrom: "Prospek di Jakarta",
 };
 /* ══════════════════════════════ */
 
 const QS = [
+  /* ── S: SITUATION ── */
   {
     phase:"S — Kenali Situasi", id:"s1",
     emoji:"👨‍👩‍👧‍👦",
@@ -436,12 +540,14 @@ const QS = [
     context:"Proteksi yang baik seharusnya mendukung tujuan hidupmu, bukan menghambatnya.",
     key:"rencana",
     opts:[
-      { t:"Memastikan keluarga tercukupi dan melunasi kewajiban", v:"proteksi" },
-      { t:"Menyiapkan kepastian dana pendidikan anak", v:"pendidikan" },
-      { t:"Merencanakan dana Ibadah Haji/Umroh atau pensiun", v:"pensiun" },
+      { t:"Memastikan keluarga tetap aman jika sesuatu terjadi pada saya", v:"proteksi" },
+      { t:"Menyiapkan dana pendidikan anak sampai kuliah", v:"pendidikan" },
+      { t:"Membangun dana pensiun atau Ibadah Haji/Umroh", v:"pensiun" },
+      { t:"Melunasi hutang dan cicilan yang ada", v:"hutang" },
     ]
   },
 
+  /* ── P: PROBLEM ── */
   {
     phase:"P — Temukan Celah", id:"p1",
     transition:{ color:"amber", label:"Oke, sekarang kita cari celahnya", title:"Kondisimu sudah tergambar.", sub:"Sekarang kita lihat bagian mana yang mungkin masih rentan dan belum terlindungi." },
@@ -473,7 +579,7 @@ const QS = [
     phase:"P — Temukan Celah", id:"p3",
     emoji:"🧬",
     text:"Di keluargamu — orang tua atau saudara — adakah yang pernah kena kanker, jantung, stroke, atau diabetes?",
-    context:"Riwayat penyakit keluarga adalah sinyal risiko medis yang tidak bisa diabaikan.",
+    context:"Riwayat penyakit keluarga adalah alarm alami yang sering diabaikan.",
     key:"riwayat",
     opts:[
       { t:"Tidak ada riwayat penyakit berat di keluarga", v:"rendah" },
@@ -483,6 +589,7 @@ const QS = [
     ]
   },
 
+  /* ── I: IMPLICATION ── */
   {
     phase:"I — Rasakan Dampaknya", id:"i1",
     transition:{ color:"red", label:"Sekarang kita bayangkan yang paling berat", title:"Celah sudah terlihat.", sub:"Sekarang kita lihat dampak nyatanya — bukan untuk menakut-nakuti, tapi agar keputusan yang kamu buat hari ini adalah yang terbaik." },
@@ -501,7 +608,7 @@ const QS = [
     phase:"I — Rasakan Dampaknya", id:"i2",
     emoji:"💔",
     text:"Kalau kamu tiba-tiba tidak bisa jadi sumber nafkah keluarga — karena sakit keras atau hal lain — berapa lama mereka bisa bertahan?",
-    context:"Bukan soal pesimis — ini tentang mempersiapkan yang terbaik untuk orang-orang yang kamu cintai.",
+    context:"Bukan soal pesimis — ini tentang ikhtiar mempersiapkan yang terbaik untuk orang-orang yang kamu cintai.",
     key:"jiwa",
     opts:[
       { t:"Lebih dari 5 tahun — ada aset dan proteksi yang cukup", v:"aman" },
@@ -514,16 +621,17 @@ const QS = [
     phase:"I — Rasakan Dampaknya", id:"i3",
     emoji:"😰",
     text:"Dari semua kondisi yang kamu bayangkan tadi, mana yang paling bikin kamu tidak bisa tidur?",
-    context:"Tidak ada jawaban salah — ini membantu kami menyiapkan solusi syariah yang paling tepat.",
+    context:"Tidak ada jawaban salah — ini membantu kami menyiapkan solusi perlindungan yang paling tepat.",
     key:"takut",
     opts:[
-      { t:"Tagihan medis yang tiba-tiba dan sangat besar", v:"rs" },
+      { t:"Tagihan rumah sakit yang tiba-tiba dan sangat besar", v:"rs" },
       { t:"Penghasilan hilang karena sakit dan tidak bisa bekerja", v:"income" },
-      { t:"Keluarga kehilangan nafkah & warisan untuk masa depan", v:"jiwa" },
-      { t:"Rencana ibadah, pendidikan anak, atau pensiun jadi terbengkalai", v:"impian" },
+      { t:"Keluarga kehilangan nafkah kalau saya tidak ada", v:"jiwa" },
+      { t:"Semua rencana dan impian keluarga jadi terbengkalai", v:"impian" },
     ]
   },
 
+  /* ── N: NEED-PAYOFF ── */
   {
     phase:"N — Temukan Solusinya", id:"n1",
     transition:{ color:"", label:"Hampir selesai", title:"Gambarannya sudah jelas.", sub:"Dua pertanyaan terakhir ini akan membantu kami menyiapkan solusi yang paling sesuai untukmu." },
@@ -553,8 +661,9 @@ const QS = [
   },
 ];
 
+
 let cur = 0, ans = {}, uName = "";
-let activeQs = [];
+let activeQs = []; 
 
 (function init() {
   const ini = AGENT.name.trim().split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
@@ -563,6 +672,32 @@ let activeQs = [];
   if (AGENT.photo) {
     const av = document.getElementById('av-intro');
     if(av) av.innerHTML = `<img src="${AGENT.photo}" alt="" onerror="this.parentElement.textContent='${ini}'">`;
+  }
+
+  const avHtmlSmall = AGENT.photo
+    ? `<img src="${AGENT.photo}" alt="" onerror="this.parentElement.textContent='${ini}'">`
+    : ini;
+  const storyBox = document.getElementById('agent-story-box');
+  if (storyBox) {
+    storyBox.innerHTML = `
+      <div class="agent-story">
+        <div class="story-quote-mark">"</div>
+        <div class="story-body">${AGENT.story.replace('Rp 20 juta', '<strong>Rp 20 juta</strong>').replace('Rp 90 juta', '<strong>Rp 90 juta</strong>').replace('di-cover penuh', '<strong>di-cover penuh</strong>')}</div>
+        <div class="story-sig">
+          <div class="story-sig-av">${avHtmlSmall}</div>
+          <div>
+            <div class="story-sig-name">${AGENT.name}</div>
+            <div class="story-sig-role">${AGENT.role} · Sejak 2023</div>
+          </div>
+        </div>
+      </div>
+      <div class="social-proof">
+        <div class="sp-icon">💬</div>
+        <div>
+          <div class="sp-quote">${AGENT.quote}</div>
+          <div class="sp-from">— ${AGENT.quoteFrom}</div>
+        </div>
+      </div>`;
   }
 })();
 
@@ -644,7 +779,7 @@ function buildResult() {
     return;
   }
 
-  /* ── SCORING UNTUK PRODUK ALLIANZ SYARIAH SPESIFIK ── */
+  /* ── Hitung skor Allisya Syariah ── */
   const sc = { legacymax:0, ci_hasanah:0, tasbih:0, kesehatan:0 };
 
   if (a.tanggungan==='keluarga') { sc.legacymax += 5; sc.tasbih += 2; }
@@ -675,74 +810,71 @@ function buildResult() {
   if (a.takut==='jiwa')            { sc.legacymax += 6; }
   if (a.takut==='impian')          { sc.tasbih += 5; sc.legacymax += 4; }
 
-  // Hapus produk yang skornya 0 dan urutkan
   const sorted = Object.entries(sc).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,3);
 
-  /* ── NAMA DAN DESKRIPSI PRODUK ── */
+  /* ── Info per jenis asuransi (SOFT SELLING COPY) ── */
   const INFO = {
     legacymax: {
       icon:"☂️", name:"AlliSya LegacyMax",
-      reason: () => `Keluargamu dan impian masa depan mereka (seperti pendidikan anak) sangat bergantung padamu. AlliSya LegacyMax memberikan proteksi luar biasa hingga usia 120 tahun dengan fitur <strong>Booster Santunan Asuransi</strong> (nilai warisan otomatis bertambah hingga 50%). Jika kamu sehat terus hingga akhir polis, 100% total kontribusi bisa dikembalikan utuh, plus kamu bisa mewakafkan hingga 45% santunan sebagai amal jariyah.`
+      reason: () => `Sebagai bentuk ikhtiar cinta untuk keluarga, produk ini memastikan mereka menerima peninggalan (warisan) maksimal yang nilainya bisa terus bertambah melawan inflasi. Menariknya, jika kamu terus diberikan kesehatan hingga akhir masa perlindungan, kontribusimu bisa dikembalikan untuk dinikmati di masa tuamu.`
     },
     ci_hasanah: {
       icon:"🧬", name:"AlliSya CI Hasanah",
-      reason: () => `Risiko sakit kritis dan hilangnya penghasilan adalah celah terbesarmu. AlliSya CI Hasanah memberikan uang tunai langsung saat terdiagnosis untuk mengganti penghasilan yang hilang. Hebatnya lagi, produk ini punya fitur <strong>Hasanah Cash</strong>—jika kamu tetap sehat di tahun ke-20, 100% kontribusi asuransi dasarmu akan dikembalikan secara utuh!`
+      reason: () => `Untuk menjaga tabunganmu agar tidak habis jika terjadi risiko sakit berat, produk ini memberikan santunan tunai sebagai pengganti penghasilan selama masa pemulihan. Kabar baiknya, ada fitur Hasanah Cash di mana kontribusimu bisa dikembalikan utuh 100% di tahun ke-20 jika kamu senantiasa sehat.`
     },
     tasbih: {
       icon:"🕋", name:"Allianz Tasbih",
-      reason: () => `Untuk rencana besar seperti Haji, Umroh, atau target masa depan lainnya, kamu butuh instrumen yang terarah. Allianz Tasbih memberikan <strong>Dana Tahapan</strong> yang cair secara terjadwal. Sangat menenangkan, produk ini memberikan <strong>Santunan 200%</strong> jika risiko terjadi saat beribadah di Tanah Suci, lengkap dengan fasilitas evakuasi medis darurat (Blue Dot).`
+      reason: () => `Untuk niat suci seperti Haji atau Umroh, produk ini menemanimu dengan fasilitas Dana Tahapan yang cair terjadwal. Selain membantu mengumpulkan dana keberangkatan, kamu mendapat ketenangan ekstra dengan perlindungan jiwa ganda jika risiko terjadi saat beribadah di Tanah Suci.`
     },
     kesehatan: {
       icon:"🏥", name:"Asuransi Kesehatan Syariah",
-      reason: () => `Biaya perawatan medis yang tiba-tiba bisa menguras habis tabunganmu. Kamu membutuhkan kartu kesehatan berprinsip syariah yang menanggung biaya rawat inap secara komprehensif, agar fokusmu hanya pada pemulihan, bukan memikirkan dari mana uang untuk membayar tagihan rumah sakit.`
+      reason: () => `Kartu kesehatan ini bekerja berdasarkan prinsip tolong-menolong (Ta'awun), memastikan biaya rawat inapmu ter-cover dengan baik. Kamu bisa fokus sepenuhnya pada proses kesembuhan tanpa khawatir membebani keuangan keluarga.`
     },
   };
 
-  const tL = { sendiri:"masih sendiri", pasangan:"sudah berkeluarga dengan pasangan", keluarga:"menjadi sumber nafkah bagi pasangan dan anak-anak", besar:"menanggung keluarga besar" };
-  const kL = { karyawan:"karyawan tetap", usaha:"pebisnis atau freelance", keduanya:"bekerja dan memiliki usaha", belum:"saat ini belum bekerja" };
-  const rsL = { aman:"sudah terlindungi", dasar:"cukup untuk kebutuhan dasar", tabungan:"harus mengandalkan tabungan", bingung:"belum punya rencana" };
-  const critL = { aman:"sudah ada perlindungan khusus", cukup:"mengandalkan tabungan dan investasi", tipis:"mengandalkan tabungan yang akan cepat habis", rentan:"belum ada solusi yang memadai" };
-  const takutL = { rs:"tagihan perawatan medis yang besar", income:"kehilangan penghasilan utama karena sakit", jiwa:"keluarga kehilangan warisan dan sumber nafkah", impian:"impian masa depan (sekolah anak/ibadah) yang terbengkalai" };
+  const tL = { sendiri:"masih sendiri", pasangan:"sudah berkeluarga dengan pasangan", keluarga:"menjadi tulang punggung pasangan dan anak-anak", besar:"menanggung keluarga besar termasuk orang tua atau saudara" };
+  const kL = { karyawan:"karyawan tetap", usaha:"wirausaha atau freelance", keduanya:"bekerja sekaligus memiliki usaha", belum:"saat ini belum bekerja" };
+  const rsL = { aman:"sudah terlindungi", dasar:"cukup untuk kebutuhan dasar saja", tabungan:"harus mengandalkan tabungan sendiri", bingung:"belum punya rencana yang jelas" };
+  const critL = { aman:"sudah ada perlindungannya", cukup:"mengandalkan tabungan dan investasi", tipis:"mengandalkan tabungan yang mungkin tidak bertahan lama", rentan:"belum ada solusi yang jelas" };
+  const takutL = { rs:"tagihan RS yang besar", income:"kehilangan penghasilan karena sakit", jiwa:"keluarga kehilangan nafkah", impian:"impian masa depan yang terbengkalai" };
 
   const story = `
-    <p>Kamu adalah seseorang yang <span class="hl">${tL[a.tanggungan]||''}</span>, dengan pekerjaan utama sebagai <span class="hl">${kL[a.kerja]||''}</span>.</p>
-    <p>Jika risiko kesehatan terjadi, untuk biaya rumah sakit kondisimu saat ini <span class="hl">${rsL[a.rs]||''}</span>. Dan jika harus berhenti bekerja karena kondisi kritis, kamu akan <span class="hl">${critL[a.kritis]||''}</span>.</p>
-    <p>Dari semua hal tersebut, yang paling membuatmu khawatir adalah risiko <span class="hl">${takutL[a.takut]||''}</span>.</p>`;
+    <p>Kamu adalah seseorang yang <span class="hl">${tL[a.tanggungan]||''}</span>, bekerja sebagai <span class="hl">${kL[a.kerja]||''}</span>.</p>
+    <p>Untuk biaya rumah sakit, kondisimu saat ini <span class="hl">${rsL[a.rs]||''}</span>. Dan jika harus berhenti bekerja karena sakit keras, kamu <span class="hl">${critL[a.kritis]||''}</span>.</p>
+    <p>Yang paling membuatmu khawatir adalah <span class="hl">${takutL[a.takut]||''}</span>.</p>`;
 
   /* ── Celah ── */
   const gaps = [];
-  if (a.proteksi==='kosong') gaps.push({ dot:'r', title:'Belum ada proteksi sama sekali', desc:'Kondisi paling rentan — satu kejadian kecil bisa mengganggu seluruh stabilitas finansial keluarga.' });
-  if (a.proteksi==='bpjs'||a.proteksi==='dasar') gaps.push({ dot:'a', title:'Proteksi masih sangat dasar', desc:'BPJS dan asuransi kantor umumnya tidak memberikan uang tunai pengganti penghasilan jika sakit keras.' });
-  if (a.darurat==='kritis'||a.darurat==='tipis') gaps.push({ dot:'r', title:'Dana darurat rentan', desc:'Kejadian tak terduga sekecil apapun bisa memaksamu untuk berutang atau mencairkan aset produktif.' });
-  if (a.rs==='bingung'||a.rs==='tabungan') gaps.push({ dot:'r', title:'Risiko biaya medis menguras aset', desc:'Mengandalkan tabungan pribadi untuk pengobatan berisiko sangat besar bagi rencana masa depanmu.' });
-  if (a.kritis==='rentan'||a.kritis==='tipis') gaps.push({ dot:'r', title:'Risiko hilangnya penghasilan', desc:'Jika sakit keras memaksamu beristirahat panjang, tidak ada instrumen yang menggantikan pemasukan yang hilang.' });
-  if ((a.jiwa==='rentan'||a.jiwa==='tipis') && a.tanggungan!=='sendiri') gaps.push({ dot:'a', title:'Keluarga butuh kepastian warisan', desc:'Keluarga yang ditinggalkan membutuhkan lebih dari sekadar sisa tabungan untuk melanjutkan standar hidup mereka.' });
-  if (a.riwayat==='tinggi'||a.riwayat==='sangat_tinggi') gaps.push({ dot:'b', title:'Risiko genetis perlu diantisipasi', desc:'Riwayat medis keluarga adalah alarm alami yang mengharuskan kita memiliki proteksi penyakit kritis secepatnya.' });
-  
-  if (gaps.length===0) gaps.push({ dot:'b', title:'Proteksi perlu ditinjau ulang', desc:'Ada beberapa area yang bisa diperkuat agar perencanaan finansial dan ibadahmu benar-benar optimal.' });
+  if (a.proteksi==='kosong') gaps.push({ dot:'r', title:'Belum ada proteksi sama sekali', desc:'Kondisi paling rentan — satu kejadian kecil bisa punya dampak finansial yang sangat besar.' });
+  if (a.proteksi==='bpjs'||a.proteksi==='dasar') gaps.push({ dot:'a', title:'Proteksi masih sangat dasar', desc:'BPJS dan asuransi kantor bisa hilang saat kamu berhenti bekerja — dan belum cover semua risiko.' });
+  if (a.darurat==='kritis'||a.darurat==='tipis') gaps.push({ dot:'r', title:'Dana darurat sangat tipis', desc:'Tanpa dana darurat yang cukup, kejadian kecil pun bisa memaksamu berutang atau menjual aset.' });
+  if (a.rs==='bingung'||a.rs==='tabungan') gaps.push({ dot:'r', title:'Biaya RS belum terencana matang', desc:'Mengandalkan tabungan untuk biaya pengobatan berisiko besar bagi rencana masa depanmu.' });
+  if (a.kritis==='rentan'||a.kritis==='tipis') gaps.push({ dot:'r', title:'Tidak ada perlindungan ganti penghasilan', desc:'Jika sakit keras dan harus berhenti kerja berbulan-bulan, tidak ada yang menggantikan penghasilan yang hilang.' });
+  if ((a.jiwa==='rentan'||a.jiwa==='tipis') && a.tanggungan!=='sendiri') gaps.push({ dot:'a', title:'Keluarga belum punya jaminan jangka panjang', desc:'Orang-orang yang bergantung padamu perlu perlindungan yang usianya melebihi sekadar sisa tabungan.' });
+  if (a.riwayat==='tinggi'||a.riwayat==='sangat_tinggi') gaps.push({ dot:'b', title:'Risiko genetis perlu diantisipasi', desc:'Riwayat penyakit di keluarga adalah alarm alami yang mengingatkan kita untuk punya proteksi lebih awal.' });
+  if (gaps.length===0) gaps.push({ dot:'b', title:'Proteksi perlu direview secara menyeluruh', desc:'Ada beberapa area yang bisa diperkuat agar perlindunganmu benar-benar optimal.' });
 
   const gapsHtml = gaps.slice(0,4).map(g=>`
     <div class="gap-item"><div class="gap-dot ${g.dot}"></div>
     <div><div class="gap-title">${g.title}</div><div class="gap-desc">${g.desc}</div></div></div>`).join('');
 
-  /* ── Dampak ── */
+  /* ── Dampak (SOFT SELLING COPY) ── */
   const impacts = [];
-  if (a.rs==='bingung'||a.rs==='tabungan') impacts.push(`<strong>Biaya pengobatan sangat mahal.</strong> Risiko penyakit berat bisa menguras tabungan bertahun-tahun dalam hitungan minggu.`);
-  if (a.kritis==='rentan'||a.kritis==='tipis') impacts.push(`<strong>Sakit keras menghentikan penghasilan.</strong> Tanpa uang tunai pendamping, masa pemulihan akan dibebani oleh kekhawatiran membayar cicilan bulanan.`);
-  if ((a.jiwa==='rentan'||a.jiwa==='tipis') && a.tanggungan!=='sendiri') impacts.push(`<strong>Masa depan pendidikan anak dan keluarga terancam.</strong> Mereka akan menghadapi kehilangan sosok sekaligus kesulitan finansial drastis.`);
-  if (a.cicilan==='besar'||a.cicilan==='berat') impacts.push(`<strong>Cicilan utang tidak otomatis lunas.</strong> Tanpa perlindungan warisan, aset yang susah payah kamu cicil berisiko disita jika kamu tutup usia.`);
-  if (impacts.length===0) impacts.push(`<strong>Menunda proteksi adalah berjudi dengan masa depan.</strong> Semakin cepat instrumen syariah ini disiapkan, semakin tenang hidupmu.`);
+  if (a.rs==='bingung'||a.rs==='tabungan') impacts.push(`<strong>Biaya medis bisa sangat menguras tabungan.</strong> Sakit berat seringkali datang tak terduga, dan alangkah tenangnya jika kita tidak perlu memikirkan tagihan rumah sakit saat sedang masa pemulihan.`);
+  if (a.kritis==='rentan'||a.kritis==='tipis') impacts.push(`<strong>Fokus pada kesembuhan, bukan cicilan.</strong> Jika sakit memaksamu istirahat berbulan-bulan, memiliki uang tunai pengganti penghasilan akan sangat menjaga kedamaian pikiran keluargamu.`);
+  if ((a.jiwa==='rentan'||a.jiwa==='tipis') && a.tanggungan!=='sendiri') impacts.push(`<strong>Cinta terbaik adalah persiapan.</strong> Menyiapkan jaminan finansial memastikan standar hidup orang-orang yang kamu sayangi tidak berubah, apapun yang terjadi.`);
+  if (a.cicilan==='besar'||a.cicilan==='berat') impacts.push(`<strong>Lindungi aset yang susah payah dibangun.</strong> Dengan proteksi yang tepat, kewajiban cicilan tidak akan menjadi beban warisan bagi keluarga tercinta.`);
+  if (impacts.length===0) impacts.push(`<strong>Ikhtiar perlindungan sejak dini.</strong> Semakin cepat celah kecil ditutup, semakin tenang langkahmu mewujudkan impian masa depan.`);
 
   const impactHtml = impacts.map((t,i)=>`
     <div class="impact-item"><div class="impact-num">${i+1}</div><div class="impact-text">${t}</div></div>`).join('');
 
-  /* ── Prioritas Produk ── */
+  /* ── Prioritas ── */
   const rankInfo = [
     { cls:'first',  tag:'Utamakan Ini', rank:'1' },
     { cls:'second', tag:'Selanjutnya',  rank:'2' },
     { cls:'third',  tag:'Lengkapi Dengan', rank:'3' },
   ];
-  
   const prioHtml = sorted.map(([key],i)=>{
     const info = INFO[key]; const r = rankInfo[i];
     return `
@@ -759,29 +891,31 @@ function buildResult() {
       </div>`;
   }).join('');
 
+  /* ── CTA text — sesuai jawaban N (SOFT SELLING COPY) ── */
   const ctaMsg = {
-    sangat:    `Keputusan yang bijaksana! <strong>Mari kita diskusikan solusi asuransi syariah yang paling tepat sesuai kemampuanmu sekarang.</strong>`,
-    butuh_info:`Saya siap menjelaskan konsep dan keunggulan spesifik dari rekomendasi produk di atas secara transparan. <strong>Satu diskusi singkat bisa memberikan ketenangan pikiran untukmu.</strong>`,
-    budget:    `Produk Allianz Syariah sangat fleksibel. <strong>Kita akan merancang besaran kontribusi yang sangat masuk akal agar tidak mengganggu keuangan bulananmu.</strong>`,
-    review:    `<strong>Saya akan bantu me-review polis yang sudah kamu miliki, memastikan tidak ada manfaat yang tumpang tindih dan semua celah tertutup rapat.</strong>`,
+    sangat:    `Langkah pertamamu sudah sangat tepat. <strong>Mari kita ngobrol santai untuk memetakan solusi syariah yang paling pas dengan kondisimu. Tanpa paksaan, murni edukasi.</strong>`,
+    butuh_info:`Wajar jika kamu butuh pemahaman lebih dalam. <strong>Saya siap menjawab semua pertanyaanmu tentang cara kerja asuransi syariah ini dengan transparan dan sederhana.</strong>`,
+    budget:    `Kita bisa merancang perlindungan yang sangat fleksibel. <strong>Mari kita cari titik temu antara kebutuhan proteksimu dan budget yang nyaman untuk keuangan bulananmu.</strong>`,
+    review:    `<strong>Boleh saya bantu me-review polis yang sudah kamu miliki? Kita pastikan semua manfaatnya sudah optimal dan benar-benar sesuai dengan prinsip syariah.</strong>`,
   };
 
   const mulaiMsg = {
-    langsung:  "Saya mau tahu solusi detail yang direkomendasikan.",
-    edukasi:   "Bisa tolong jelaskan dulu konsep asuransi syariahnya?",
-    simulasi:  "Boleh minta dibuatkan simulasi angkanya sesuai budget?",
+    langsung:  "Saya mau tahu produk yang paling cocok untuk saya.",
+    edukasi:   "Bisa tolong bantu jelaskan konsepnya dulu?",
+    simulasi:  "Boleh minta dibuatkan hitungan simulasinya?",
     pasangan:  "Bisa dijadwalkan ngobrol bertiga dengan pasangan saya?",
   };
 
   const topPrio = sorted[0] ? INFO[sorted[0][0]].name : '-';
 
+  /* ── WA message (casual) ── */
   const waMsg = encodeURIComponent(
     `Halo ${AGENT.name}! 👋\n\n`+
-    `Saya baru selesai mengisi kuis dan hasilnya sangat membuka pikiran saya.\n\n`+
+    `Saya baru selesai isi kuis dan hasilnya cukup bikin saya berpikir.\n\n`+
     `Nama: ${nm}\n`+
     `— Tanggungan: ${tL[a.tanggungan]||'-'}\n`+
-    `— Kondisi Proteksi: ${a.proteksi==='lengkap'?'Sudah cukup lengkap':a.proteksi==='dasar'?'Baru BPJS/Asuransi Kantor':a.proteksi==='bpjs'?'Hanya BPJS':'Belum ada sama sekali'}\n`+
-    `— Kekhawatiran Utama: ${takutL[a.takut]||'-'}\n`+
+    `— Proteksi saat ini: ${a.proteksi==='lengkap'?'Sudah cukup lengkap':a.proteksi==='dasar'?'BPJS + asuransi kantor':a.proteksi==='bpjs'?'BPJS saja':'Belum ada asuransi'}\n`+
+    `— Yang paling bikin khawatir: ${takutL[a.takut]||'-'}\n`+
     `— Prioritas Saran Kuis: *${topPrio}*\n\n`+
     `${mulaiMsg[a.mulai]||''} Terima kasih sebelumnya! 🙏`
   );
@@ -793,8 +927,8 @@ function buildResult() {
   document.getElementById('result-body').innerHTML = `
     <div class="res-hero">
       <div class="res-label">Hasil untuk ${nm}</div>
-      <div class="res-name">Ini prioritas proteksi Syariah yang paling sesuai kondisimu</div>
-      <div class="res-intro">Ini adalah hasil pemetaan dari kondisi finansial, celah perlindungan, dan tujuan utamamu di masa depan.</div>
+      <div class="res-name">Ini prioritas perlindungan yang paling sesuai untukmu</div>
+      <div class="res-intro">Hasil ini dipetakan secara khusus dari kondisimu, celah perlindungan, dan risiko yang paling kamu pedulikan.</div>
     </div>
 
     <div class="r-section">
@@ -809,36 +943,59 @@ function buildResult() {
 
     <div class="r-section">
       <div class="impact-box">
-        <div class="impact-title">⚠️ Jika Dibiarkan Tanpa Solusi...</div>
+        <div class="impact-title">⚠️ Mengapa Harus Disiapkan Sekarang?</div>
         ${impactHtml}
       </div>
     </div>
 
     <div class="r-section">
-      <div class="r-sec-title">Rekomendasi Produk Terbaik Untukmu</div>
+      <div class="r-sec-title">Rekomendasi Produk Syariah Terbaikmu</div>
       <div class="prio-cards">${prioHtml}</div>
     </div>
 
     <div class="cta-block">
       <div class="cta-agent">
         <div class="cta-av">${avHtml}</div>
-        <div><div class="cta-name">${AGENT.name}</div><div class="cta-role">${AGENT.role}</div></div>
+        <div>
+          <div class="cta-name">${AGENT.name}</div>
+          <div class="cta-role">${AGENT.role}</div>
+        </div>
       </div>
       <div class="cta-body">
         <div class="cta-text">${ctaMsg[a.urgensi]||ctaMsg.butuh_info}</div>
+
+        <div class="next-steps">
+          <div class="ns-title">Yang akan terjadi setelah kamu WA</div>
+          <div class="ns-row">
+            <div class="ns-num">1</div>
+            <div class="ns-text"><strong>Saya pelajari hasil kuismu</strong> — jadi kamu tidak perlu jelaskan dari awal</div>
+          </div>
+          <div class="ns-row">
+            <div class="ns-num">2</div>
+            <div class="ns-text"><strong>Ngobrol santai 20–30 menit</strong> — tanpa tekanan, murni diskusi solusi</div>
+          </div>
+          <div class="ns-row">
+            <div class="ns-num">3</div>
+            <div class="ns-text"><strong>Kamu dapat ilustrasi jelas</strong> — apa opsi terbaik dan berapa angkanya</div>
+          </div>
+        </div>
+
         <a href="${waUrl}" target="_blank" class="btn-wa">
           <svg class="wa-svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Konsultasi Gratis via WhatsApp
         </a>
+
+        <div class="urgency-note">⏰ <strong>Semakin muda dan sehat kondisimu sekarang, semakin murah premi yang kamu bayar.</strong> Premi tidak akan lebih murah dari hari ini.</div>
       </div>
     </div>
 
     <button class="btn-retry" onclick="retry()">↺ Ulangi Kuis</button>
-    <div class="result-tip">Bagikan kuis ini ke keluarga dan sahabatmu agar mereka juga tahu prioritas proteksi asuransi mereka 💙</div>
+    <div class="result-tip">Bagikan kuis ini ke keluarga atau teman agar mereka juga tahu prioritas asuransi mereka 💙</div>
   `;
 
   show('s-result');
 }
+
 
 function buildReviewResult(nm, a) {
   const ini = AGENT.name.trim().split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
@@ -846,28 +1003,28 @@ function buildReviewResult(nm, a) {
 
   const waMsg = encodeURIComponent(
     `Halo ${AGENT.name}! 👋\n\n`+
-    `Saya baru saja mengisi kuis asuransi dan sepertinya portofolio proteksi saya sudah cukup solid.\n\n`+
+    `Saya baru isi kuis dan sepertinya proteksi saya sudah cukup lengkap.\n\n`+
     `Nama: ${nm}\n`+
-    `Saya ingin meminta bantuan untuk melakukan Polis Review. Mari pastikan tidak ada celah perlindungan dan manfaatnya benar-benar optimal sesuai prinsip asuransi syariah. Bisa dibantu? 🙏`
+    `Saya ingin minta bantuan review polis asuransi saya. Kita pastikan semua manfaatnya masih relevan dan optimal untuk saya. Bisa dibantu? 🙏`
   );
   const waUrl = `https://wa.me/${AGENT.wa}?text=${waMsg}`;
 
   const reviewItems = [
-    { icon:"🔍", title:"Tinjau Ulang Uang Pertanggungan Jiwa", desc:"Mengevaluasi apakah nilai warisannya masih sebanding dengan inflasi dan standar hidup keluargamu saat ini." },
-    { icon:"🏥", title:"Kecukupan Manfaat Rawat Inap", desc:"Memastikan batas limit, plafon, dan jaringan rumah sakit swasta yang tersedia masih memadai untuk tahun ini." },
-    { icon:"🧬", title:"Pemeriksaan Rider Sakit Kritis", desc:"Memastikan perlindungan tahap penyakit yang di-cover sudah cukup luas untuk menjaga stabilitas finansial keluargamu." },
-    { icon:"📋", title:"Kelengkapan Dokumen Keahliwarisan", desc:"Memastikan administrasi data penerima manfaat terkelola dengan baik agar klaim berjalan lancar." },
+    { icon:"🔍", title:"Cek ulang uang pertanggungan jiwa", desc:"Apakah jumlahnya masih sesuai dengan standar hidup dan tanggungan yang terus berkembang?" },
+    { icon:"🏥", title:"Manfaat rawat inap", desc:"Limit tagihan, plafon bedah, dan jaringan rumah sakit — mari pastikan masih relevan dengan harga medis hari ini." },
+    { icon:"🧬", title:"Review rider sakit kritis", desc:"Berapa tahapan penyakit yang dicover? Memastikan ada dana tunai yang cair saat masa pemulihan." },
+    { icon:"📋", title:"Kelengkapan dokumen klaim", desc:"Semua ahli waris sudah tertulis rapi dan proses klaimnya siap sedia." },
   ];
 
   document.getElementById('result-body').innerHTML = `
     <div class="res-hero review-hero">
       <div class="res-label">Hasil untuk ${nm}</div>
-      <div class="res-name">Fondasi Proteksimu Sudah Luar Biasa 👏</div>
-      <div class="res-intro">Kamu telah melakukan langkah cerdas dengan melindungi diri. Tugas berikutnya adalah memastikan setiap manfaat asuransimu tetap relevan dan optimal.</div>
+      <div class="res-name">Fondasi Proteksimu Sudah Sangat Baik 👏</div>
+      <div class="res-intro">Memiliki perlindungan adalah langkah cerdas. Tugas selanjutnya adalah memelihara agar polis tersebut selalu relevan dengan dinamika hidupmu saat ini.</div>
     </div>
 
     <div class="r-section">
-      <div class="r-sec-title">Hal yang Perlu Dicek Secara Berkala</div>
+      <div class="r-sec-title">Celah yang Biasa Terlewat & Perlu Dicek</div>
       <div class="gap-list">
         ${reviewItems.map(r=>`
           <div class="gap-item">
@@ -879,26 +1036,46 @@ function buildReviewResult(nm, a) {
 
     <div class="r-section" style="padding-bottom:0;">
       <div class="story-card">
-        <p>Polis asuransi harus tumbuh seiring perubahan hidupmu (seperti kelahiran anak, atau cicilan baru). Melakukan review minimal setahun sekali sangat disarankan untuk ketenangan pikiran jangka panjang.</p>
+        <p>Polis asuransi idealnya tumbuh seiring fase kehidupanmu (promosi jabatan, punya cicilan KPR baru, atau lahirnya anak). Melakukan review minimal setahun sekali sangat direkomendasikan demi menjaga ketenangan pikiran keluargamu.</p>
       </div>
     </div>
 
     <div class="cta-block">
       <div class="cta-agent">
         <div class="cta-av">${avHtml}</div>
-        <div><div class="cta-name">${AGENT.name}</div><div class="cta-role">${AGENT.role}</div></div>
+        <div>
+          <div class="cta-name">${AGENT.name}</div>
+          <div class="cta-role">${AGENT.role}</div>
+        </div>
       </div>
       <div class="cta-body">
-        <div class="cta-text"><strong>Apakah kamu butuh *second opinion* untuk proteksimu?</strong> Saya bisa membantu menganalisis polis asuransimu secara objektif untuk memastikan keamanan masa depanmu.</div>
+        <div class="cta-text"><strong>Apakah kamu butuh bantuan *second opinion*?</strong> Saya siap membantu membaca dan menganalisis polis lamamu, lalu memberikan laporan obyektif tentang area mana yang sudah hebat dan mana yang berpotensi menjadi celah.</div>
+
+        <div class="next-steps">
+          <div class="ns-title">Yang akan terjadi setelah kamu WA</div>
+          <div class="ns-row">
+            <div class="ns-num">1</div>
+            <div class="ns-text"><strong>Sesi sapa singkat</strong> — kamu bisa kirimkan ringkasan dari polis lamamu.</div>
+          </div>
+          <div class="ns-row">
+            <div class="ns-num">2</div>
+            <div class="ns-text"><strong>Review detail 20 menit</strong> — saya analisa kecukupan manfaatmu saat ini.</div>
+          </div>
+          <div class="ns-row">
+            <div class="ns-num">3</div>
+            <div class="ns-text"><strong>Kesimpulan transparan</strong> — saya sampaikan secara jujur jika kamu sudah benar-benar aman.</div>
+          </div>
+        </div>
+
         <a href="${waUrl}" target="_blank" class="btn-wa">
           <svg class="wa-svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Minta Review Polis via WhatsApp
+          Minta Review Proteksi via WhatsApp
         </a>
       </div>
     </div>
 
     <button class="btn-retry" onclick="retry()">↺ Ulangi Kuis</button>
-    <div class="result-tip">Bagikan kuis ini ke keluarga dan sahabatmu agar mereka juga tahu prioritas proteksi asuransi mereka 💙</div>
+    <div class="result-tip">Bagikan kuis ini ke keluarga atau teman agar mereka juga tahu prioritas perlindungan mereka 💙</div>
   `;
 
   show('s-result');
