@@ -75,17 +75,6 @@ body {
 .agent-av img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
 .agent-pill-name { font-size:12px; font-weight:600; color:rgba(255,255,255,.85); }
 
-.stat-row {
-  display: grid; grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-}
-.stat-box {
-  background: var(--white); border: 1px solid var(--line);
-  border-radius: var(--r); padding: 12px 10px; text-align: center;
-}
-.stat-num { font-size: 20px; font-weight: 800; color: var(--blue); line-height: 1; margin-bottom: 3px; }
-.stat-lbl { font-size: 10px; color: var(--ink3); line-height: 1.3; }
-
 .no-risk { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
 .nr-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink3); font-weight: 500; }
 .nr-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
@@ -379,21 +368,6 @@ body {
   </div>
 
   <div class="intro-body" style="padding-top: 24px;">
-    <div class="stat-row" style="margin-bottom: 32px;">
-      <div class="stat-box">
-        <div class="stat-num">1'</div>
-        <div class="stat-lbl">Waktu pengerjaan</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-num">✨</div>
-        <div class="stat-lbl">Singkat & Mudah</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-num">100%</div>
-        <div class="stat-lbl">Rahasia & Aman</div>
-      </div>
-    </div>
-
     <div class="field-label" style="text-align: center;">Siapa namamu? (Opsional)</div>
     <input type="text" class="field-input" id="u-name" placeholder="Ketik namamu di sini..." maxlength="30" autocomplete="off" style="text-align: center; margin-bottom: 16px;">
 
@@ -443,8 +417,7 @@ const AGENT = {
 const PRODUCTS = {
   jiwa:       "AlliSya LegacyMax",
   kesehatan:  "Asuransi Kesehatan Allianz Syariah",
-  kritis:     "AlliSya CI Hasanah",
-  pendidikan: "Asuransi Pendidikan Allianz Syariah",
+  kritis:     "AlliSya CI Hasanah"
 };
 /* ══════════════════════════════ */
 
@@ -503,18 +476,15 @@ const QS = [
       { t:"Karyawan tetap — gaji rutin tiap bulan", v:"karyawan" },
       { t:"Wirausaha atau freelance — penghasilan tidak tetap", v:"usaha" },
       { t:"Keduanya — kerja sambil punya usaha sendiri", v:"keduanya" },
-      { t:"Saat ini belum bekerja", v:"belum" },
     ]
   },
   {
     phase:"S — Kenali Situasi", id:"s2b",
-    skipIf: (ans) => ans.kerja === 'belum',
     emoji:"💵",
     text:"Berapa kisaran penghasilanmu per bulan?",
     context:"Ini membantu kami memperkirakan besaran proteksi ideal untukmu.",
     key:"penghasilan",
     opts:[
-      { t:"Di bawah Rp 5 juta / bulan", v:"rendah" },
       { t:"Rp 5–15 juta / bulan", v:"menengah" },
       { t:"Rp 15–30 juta / bulan", v:"tinggi" },
       { t:"Di atas Rp 30 juta / bulan", v:"premium" },
@@ -527,10 +497,9 @@ const QS = [
     context:"Agar kita tahu mana yang sudah aman dan mana celah yang perlu diisi.",
     key:"proteksi",
     opts:[
-      { t:"Sudah lengkap punya Asuransi Jiwa + Kesehatan + Sakit Kritis", v:"lengkap" },
-      { t:"Punya Asuransi Kesehatan dari Kantor atau BPJS", v:"dasar" },
+      { t:"Punya Asuransi Kesehatan Swasta + BPJS + Asuransi Kantor", v:"swasta" },
+      { t:"BPJS + Asuransi Kantor", v:"dasar" },
       { t:"Hanya BPJS saja", v:"bpjs" },
-      { t:"Belum punya asuransi apapun", v:"kosong" },
       { t:"Punya beberapa asuransi, tapi tidak yakin isinya apa saja", v:"tidak_yakin" }
     ]
   },
@@ -558,9 +527,18 @@ const QS = [
     key:"takut",
     opts:[
       { t:"Tabungan ludes untuk bayar tagihan Rumah Sakit yang tiba-tiba", v:"rs" },
-      { t:"Penghasilan hilang karena sakit keras dan tidak bisa bekerja", v:"income" },
-      { t:"Keluarga kehilangan nafkah/terlantar kalau saya mendadak tidak ada", v:"jiwa" },
-      { t:"Semua rencana (termasuk pendidikan anak) jadi terbengkalai", v:"impian" },
+      { t:"Penghasilan terhenti total karena sakit keras, membuat semua rencana finansial berantakan", v:"income" },
+      { 
+        t: (a) => {
+          if(a.tanggungan === 'sendiri') return "Meninggalkan beban hutang yang merepotkan orang tua/keluarga jika saya mendadak tiada";
+          if(a.tanggungan === 'pasangan') return "Pasangan tercinta kehilangan sumber nafkah dan kebingungan menyambung hidup jika saya tiada";
+          if(a.tanggungan === 'keluarga') return "Pasangan kesulitan menyambung hidup dan masa depan anak terancam jika saya mendadak tiada";
+          if(a.tanggungan === 'sandwich_single') return "Orang tua kehilangan penopang hidup dan kesulitan ekonomi di masa tua jika saya tiada";
+          if(a.tanggungan === 'sandwich_menikah') return "Orang tua dan keluarga kecil saya kehilangan penopang hidup sekaligus jika saya mendadak tiada";
+          return "Keluarga kehilangan nafkah utama jika saya mendadak tiada";
+        }, 
+        v:"jiwa" 
+      },
     ]
   },
   {
@@ -583,7 +561,7 @@ const QS = [
     key:"kondisi_diri",
     opts:[
       { t:"Sehat, tidak ada kondisi medis yang sedang berjalan", v:"sehat" },
-      { t:"Ada kondisi tertentu yang sudah terdiagnosis (diabetes, dll)", v:"ada_kondisi" },
+      { t:"Ada kondisi tertentu yang sudah terdiagnosis", v:"ada_kondisi" },
       { t:"Pernah sakit berat di masa lalu, tapi sudah sembuh", v:"pernah_sakit" },
       { t:"Sedang dalam masa pengobatan rutin", v:"pengobatan" },
     ]
@@ -618,7 +596,7 @@ const QS = [
   /* ── I: IMPLICATION ── */
   {
     phase:"I — Rasakan Dampaknya", id:"i1",
-    transition:{ color:"red", label:"Skenario Terberat", title:"Celah sudah terlihat.", sub:"Mari kita lihat dampak nyatanya agar keputusan yang kamu buat hari ini adalah yang terbaik." },
+    transition:{ color:"red", label:"Persiapan Mental", title:"Ketenangan datang dari kesiapan.", sub:"Membayangkan skenario terburuk bukan untuk menakut-nakuti, melainkan memastikan kamu memegang kendali penuh jika hal itu benar terjadi." },
     emoji:"🛏️",
     text:"Bayangkan kamu harus berhenti kerja 1 tahun penuh karena sakit keras. Dari mana keluargamu bertahan hidup?",
     context:"Penyakit kritis tidak hanya mahal diobati — penghasilan juga berhenti total selama pemulihan.",
@@ -626,7 +604,6 @@ const QS = [
     opts:[
       { t:"Tenang — sudah ada asuransi sakit kritis yang akan mengganti penghasilan saya", v:"aman" },
       { t:"Terpaksa mencairkan dana darurat/tabungan dan mulai jual aset (emas/kendaraan)", v:"cukup" },
-      { t:"Tabungan cepat habis, dan cicilan bulanan pasti mulai menunggak", v:"tipis" },
       { t:"Jujur, terpaksa berhutang atau minta bantuan dana dari keluarga besar", v:"rentan" },
     ]
   },
@@ -656,8 +633,6 @@ const QS = [
     opts:[
       { t:"Hari kerja (Senin - Jumat), pas jam istirahat atau sore/malam", v:"weekday" },
       { t:"Akhir pekan (Sabtu / Minggu), pas lagi santai di rumah", v:"weekend" },
-      { t:"Boleh, tapi saya mau ajak pasangan ikut ngobrol juga biar sekalian", v:"pasangan" },
-      { t:"Tolong hubungi saya duluan ya untuk bahas hasilnya. Nanti kita jadwalkan waktu santainya", v:"info" },
     ]
   },
 ];
@@ -726,7 +701,7 @@ function paint() {
       ${q.opts.map(o=>`
         <div class="opt${saved===o.v?' sel':''}" onclick="pick(this,'${q.key}','${o.v}')">
           <div class="opt-radio"><div class="opt-dot"></div></div>
-          <div class="opt-text">${o.t}</div>
+          <div class="opt-text">${typeof o.t === 'function' ? o.t(ans) : o.t}</div>
         </div>`).join('')}
     </div>`;
 
@@ -790,7 +765,9 @@ function prev() {
 function calculateScore(a) {
   let sc = 0;
   if(a.darurat==='aman') sc+=15; else if(a.darurat==='cukup') sc+=10; else if(a.darurat==='tipis') sc+=5;
-  if(a.proteksi==='lengkap') sc+=25; else if(['dasar','bpjs'].includes(a.proteksi)) sc+=15; else if(a.proteksi==='tidak_yakin') sc+=5;
+  
+  if(a.proteksi==='swasta') sc+=25; else if(a.proteksi==='dasar') sc+=15; else if(a.proteksi==='bpjs') sc+=10; else if(a.proteksi==='tidak_yakin') sc+=5;
+  
   if(a.rs==='aman') sc+=15; else if(a.rs==='dasar') sc+=10; else if(a.rs==='tabungan') sc+=5;
   if(a.kritis==='aman') sc+=20; else if(a.kritis==='cukup') sc+=5; else if(a.kritis==='tipis') sc+=0;
   
@@ -817,15 +794,14 @@ function buildResult() {
   /* ── DERIVED FLAGS ── */
   const isSandwich       = ['sandwich_single','sandwich_menikah'].includes(a.tanggungan); 
   const punyaTanggungan  = ['pasangan','keluarga'].includes(a.tanggungan) || isSandwich;
-  const punyaAnak        = ['keluarga','sandwich_menikah'].includes(a.tanggungan);
   const adaKondisiDiri   = ['ada_kondisi','pengobatan','pernah_sakit'].includes(a.kondisi_diri);
   const riwayatTinggi    = a.riwayat === 'tinggi';
 
   const kerjaUsaha       = ['usaha','keduanya'].includes(a.kerja);
   const effectiveProteksi = (kerjaUsaha && a.proteksi === 'dasar') ? 'bpjs' : a.proteksi;
 
-  const belumAda         = effectiveProteksi === 'kosong';
-  const punyaBPJS        = ['bpjs','dasar'].includes(effectiveProteksi);
+  const punyaBPJS        = ['bpjs','dasar','swasta'].includes(effectiveProteksi);
+  const punyaSwasta      = effectiveProteksi === 'swasta';
   const rsButuhUpgrade   = ['tabungan','bingung'].includes(a.rs); 
   
   const kritisAman       = a.kritis === 'aman'; 
@@ -833,7 +809,7 @@ function buildResult() {
   const cicilanBerat     = ['besar','berat'].includes(a.cicilan);
   const usiaMuda         = a.usia === 'muda';
 
-  const isAlreadyProtected = effectiveProteksi === 'lengkap' && a.kondisi_diri === 'sehat'; 
+  const isAlreadyProtected = punyaSwasta && a.kondisi_diri === 'sehat' && kritisAman && jiwaAman; 
 
   if (isAlreadyProtected) { buildReviewResult(nm, a); return; }
 
@@ -844,29 +820,25 @@ function buildResult() {
     if (!jiwaAman) prioritas.push('jiwa');
     if (!kritisAman) prioritas.push('kritis');
     
-    if (belumAda || rsButuhUpgrade || effectiveProteksi === 'tidak_yakin') {
-      if (!punyaBPJS || rsButuhUpgrade) prioritas.push('kesehatan');
-    }
-    
-    if (punyaAnak && a.usia_anak !== 'dewasa') {
-      if (a.takut === 'impian' || ['balita', 'sd'].includes(a.usia_anak)) prioritas.push('pendidikan');
+    if (rsButuhUpgrade || effectiveProteksi === 'tidak_yakin') {
+      prioritas.push('kesehatan');
     }
   } else {
     if (!kritisAman) prioritas.push('kritis');
     if (cicilanBerat || a.takut === 'jiwa') prioritas.push('jiwa');
     
-    if (belumAda || rsButuhUpgrade || effectiveProteksi === 'tidak_yakin') {
-      if (!punyaBPJS || rsButuhUpgrade) prioritas.push('kesehatan');
+    if (rsButuhUpgrade || effectiveProteksi === 'tidak_yakin') {
+      prioritas.push('kesehatan');
     }
   }
 
   if (riwayatTinggi && !prioritas.includes('kritis')) prioritas.push('kritis');
   if (adaKondisiDiri && !prioritas.includes('kesehatan')) {
-    if (!punyaBPJS || rsButuhUpgrade) prioritas.push('kesehatan');
+    if (rsButuhUpgrade || effectiveProteksi === 'tidak_yakin') prioritas.push('kesehatan');
   }
   
   if (prioritas.length === 0) {
-    if (!punyaBPJS) prioritas.push('kesehatan');
+    if (!punyaSwasta) prioritas.push('kesehatan');
     else if (punyaTanggungan) prioritas.push('jiwa');
     else prioritas.push('kritis');
   }
@@ -874,11 +846,11 @@ function buildResult() {
   /* ── RE-ORDERING ── */
   if (riwayatTinggi && prioritas.includes('kritis') && prioritas.indexOf('kritis') > 1) {
     prioritas.splice(prioritas.indexOf('kritis'), 1);
-    prioritas.splice(prioritas.indexOf('jiwa') >= 0 ? 1 : 0, 0, 'kritis');
+    prioritas.splice(prioritas.indexOf('jiwa') >= 0 ? 1 : 0, 'kritis');
   }
 
   let reordered = false;
-  if (!reordered && a.takut === 'rs' && (belumAda || rsButuhUpgrade) && prioritas.includes('kesehatan') && prioritas[0] !== 'kesehatan') {
+  if (!reordered && a.takut === 'rs' && rsButuhUpgrade && prioritas.includes('kesehatan') && prioritas[0] !== 'kesehatan') {
     prioritas.splice(prioritas.indexOf('kesehatan'), 1);
     prioritas.unshift('kesehatan'); reordered = true;
   }
@@ -905,29 +877,44 @@ function buildResult() {
   const sorted = prioritas.slice(0, maxPrio);
 
   /* ── LABELS & LOOKUPS ── */
-  const penghasilanL = { rendah:'< Rp 5jt/bln', menengah:'Rp 5–15jt/bln', tinggi:'Rp 15–30jt/bln', premium:'> Rp 30jt/bln' };
-  const upJiwaEst = { rendah:'Rp 900 Juta – 1,5 Miliar', menengah:'Rp 1,5 – 4,5 Miliar', tinggi:'Rp 4,5 – 9 Miliar', premium:'di atas Rp 9 Miliar' };
-  const upKritisEst = { rendah:'Rp 150 – 300 Juta', menengah:'Rp 300 – 900 Juta', tinggi:'Rp 900 Juta – 1,8 Miliar', premium:'di atas Rp 1,8 Miliar' };
+  const penghasilanL = { menengah:'Rp 5–15jt/bln', tinggi:'Rp 15–30jt/bln', premium:'> Rp 30jt/bln' };
+  const upJiwaEst = { menengah:'Rp 1,5 – 4,5 Miliar', tinggi:'Rp 4,5 – 9 Miliar', premium:'di atas Rp 9 Miliar' };
+  const upKritisEst = { menengah:'Rp 300 – 900 Juta', tinggi:'Rp 900 Juta – 1,8 Miliar', premium:'di atas Rp 1,8 Miliar' };
 
   const tL = {
     sendiri:"masih single tanpa tanggungan", pasangan:"sudah berkeluarga", keluarga:"menjadi tulang punggung bagi keluarga inti",
     sandwich_single:"berstatus single tapi menanggung hidup orang tua (Sandwich Gen)", sandwich_menikah:"menanggung keluarga inti sekaligus orang tua (Sandwich Gen)"
   };
 
-  const kerjaLabel = { karyawan:'Karyawan tetap', usaha:'Wirausaha/Freelance', keduanya:'Karyawan & Usaha', belum:'Belum bekerja' };
-  const proteksiLabel = { lengkap:'Jiwa+Kes+Kritis', dasar:'Asuransi Kantor/Dasar', bpjs:'Hanya BPJS', kosong:'Belum ada', tidak_yakin:'Ada tapi tidak yakin' };
+  const kerjaLabel = { karyawan:'Karyawan tetap', usaha:'Wirausaha/Freelance', keduanya:'Karyawan & Usaha' };
+  const proteksiLabel = { swasta:'Swasta + BPJS + Kantor', dasar:'BPJS + Asuransi Kantor', bpjs:'Hanya BPJS', tidak_yakin:'Ada tapi tidak yakin' };
   const kondisiLabel = { sehat:'Sehat', ada_kondisi:'Ada kondisi terdiagnosis', pernah_sakit:'Pernah sakit berat (sembuh)', pengobatan:'Sedang pengobatan rutin' };
   const riwayatLabel = { rendah:'Tidak ada', sedang:'Ada 1 orang', tinggi:'Ada 2+ orang' };
   const cicilanLabel = { bebas:'Bebas hutang', ringan:'Ringan (10-25%)', besar:'Cukup besar (25-50%)', berat:'Sangat berat (>50%)' };
-  const takutL = { rs:"tagihan RS yang besar", income:"kehilangan penghasilan karena sakit", jiwa:"keluarga kehilangan nafkah", impian:"impian anak dan masa depan terbengkalai" };
+  
+  const takutLabel = () => {
+    if(a.takut === 'rs') return "Tagihan RS yang tiba-tiba";
+    if(a.takut === 'income') return "Penghasilan terhenti total karena sakit";
+    if(a.takut === 'jiwa') {
+        if(a.tanggungan === 'sendiri') return "Meninggalkan beban hutang ke keluarga";
+        if(a.tanggungan.includes('sandwich')) return "Orang tua kehilangan penopang hidup";
+        return "Keluarga kehilangan nafkah jika saya tiada";
+    }
+    return "-";
+  };
   const usiaL = { muda:"di bawah 30 tahun", dewasa:"30–40 tahun", matang:"40–50 tahun", senior:"di atas 50 tahun" };
   
+  function kerjaTeks() {
+    const kL = { karyawan:"karyawan tetap", usaha:"wirausaha atau freelance", keduanya:"karyawan sekaligus memiliki usaha sendiri" };
+    return `bekerja sebagai <span class="hl">${kL[a.kerja]||a.kerja}</span>`;
+  }
+
   /* ── INFO PER JENIS ASURANSI ── */
   const INFO = {
     jiwa: {
       icon:"☂️", name:`Asuransi Jiwa (${PRODUCTS.jiwa})`,
       reason: () => {
-        let upNote = `💡 <em><span style="font-size:12.5px; color:var(--ink2);">Catatan: ${PRODUCTS.jiwa} adalah produk jiwa pembentuk warisan. Uang premi bukan pengeluaran hangus, melainkan sebagian besar akan kembali di akhir masa.</span></em>`;
+        let upNote = `💡 <em><span style="font-size:12.5px; color:var(--ink2);">Catatan: ${PRODUCTS.jiwa} memastikan uangmu tidak hangus. Nikmati pengembalian total premi yang telah dibayarkan saat kamu masih hidup, sementara perlindungan warisan miliaran rupiah tetap aktif hingga usiamu 120 tahun.</span></em>`;
         const upTeks = a.penghasilan ? ` <br><br>💡 <em>Estimasi Uang Pertanggungan (Aset) ideal untukmu adalah <strong>${upJiwaEst[a.penghasilan]}</strong>.</em><br><br>${upNote}` : ` <br><br>💡 <em>Sangat disarankan untuk segera menghitung estimasi Uang Pertanggungan ideal sesuai standar pengeluaranmu saat ini.</em><br><br>${upNote}`;
         
         if (a.tanggungan === 'sandwich_menikah') return `Keluarga dan orang tuamu sangat bergantung pada penghasilanmu. Jika terjadi sesuatu, mereka butuh jaminan agar tidak jatuh miskin bersamaan.${upTeks}`;
@@ -942,7 +929,7 @@ function buildResult() {
       icon:"🏥", name:`${PRODUCTS.kesehatan} & BPJS`,
       reason: () => {
         if (adaKondisiDiri) return `Dengan kondisi kesehatanmu saat ini, <strong>semakin cepat mengajukan semakin baik</strong>. Konsultasi jujur adalah kunci agar proteksimu benar-benar bekerja saat klaim.`;
-        if (belumAda) return `Karena kamu belum punya proteksi kesehatan sama sekali, <strong>langkah paling awal adalah mendaftar BPJS Kesehatan</strong>. Setelah BPJS aktif, barulah kita lengkapi dengan Asuransi Swasta Allianz agar bebas antre panjang dan nyaman di RS.`;
+        if (!punyaSwasta) return `Karena kamu belum punya proteksi kesehatan swasta, kita perlu lengkapi asuransi dari kantormu/BPJS dengan Asuransi Swasta Allianz agar bebas antre panjang dan nyaman di RS.`;
         if (punyaBPJS && rsButuhUpgrade) return `BPJS sudah mengamankan kebutuhan dasarmu. Namun asuransi swasta memberikan kenyamanan ekstra: akses RS lebih luas, bebas antre panjang, dan pemulihan nyaman tanpa kuras tabungan.`;
         return `BPJS adalah fondasi wajib. Asuransi kesehatan swasta melengkapinya agar kamu mendapat layanan RS lebih cepat, bebas antre, dan pemulihan yang lebih nyaman tanpa kuras tabungan.`;
       }
@@ -950,18 +937,15 @@ function buildResult() {
     kritis: {
       icon:"🧬", name:`Asuransi Sakit Kritis (${PRODUCTS.kritis})`,
       reason: () => {
-        const planSaran = riwayatTinggi ? 'Plan Max (77 penyakit kritis)' : 'Plan Lite (fokus kanker, jantung, stroke)';
-        const upTeks = a.penghasilan ? ` <br><br>💡 <em>Standar pemulihan butuh backup income 3-5 tahun. Estimasi Uang Pertanggungan cair disarankan adalah <strong>${upKritisEst[a.penghasilan]}</strong>.<br><br>👉 Prioritaskan ambil <strong>${planSaran}</strong> sesuai risikomu.</em>` : ` <br><br>💡 <em>👉 Disarankan ambil <strong>${planSaran}</strong> sesuai profil risikomu.</em>`;
+        let upNote = `💡 <em><span style="font-size:12.5px; color:var(--ink2);">Catatan: Sama seperti perlindungan jiwa, premi ${PRODUCTS.kritis} juga tidak hangus. Total premi yang dibayarkan akan kembali utuh jika kamu tetap sehat hingga akhir masa perlindungan.</span></em>`;
+        
+        const upTeks = a.penghasilan ? ` <br><br>💡 <em>Standar pemulihan butuh backup income 3-5 tahun. Estimasi Uang Pertanggungan cair disarankan adalah <strong>${upKritisEst[a.penghasilan]}</strong>.</em><br><br>${upNote}` : ` <br><br>${upNote}`;
 
         if (riwayatTinggi) return `Riwayat penyakit di keluargamu adalah sinyal risiko nyata. ${PRODUCTS.kritis} mencairkan uang tunai langsung saat didiagnosis — untuk berobat sekaligus mengganti gajimu.${upTeks}`;
         if (!punyaTanggungan) return `Sebagai single, kamu harus menjaga dirimu sendiri. Kalau sakit keras dan stop kerja, ini memberimu dana tunai untuk mengganti biaya hidup dan cicilanmu.${upTeks}`;
         return `Penyakit kritis menghentikan penghasilan selama masa pemulihan. Perlindungan ini memastikan roda ekonomi keluargamu tetap berjalan saat kamu fokus sembuh.${upTeks}`;
       }
-    },
-    pendidikan: {
-      icon:"🎓", name:`Asuransi Pendidikan (${PRODUCTS.pendidikan})`,
-      reason: () => `Mempersiapkan dana pendidikan anak sejak dini memastikan impian masa depan mereka tidak terhenti oleh apapun risiko yang terjadi padamu.`
-    },
+    }
   };
 
   /* ── GET COLOR & DYNAMIC MESSAGE ── */
@@ -986,9 +970,9 @@ function buildResult() {
   if (a.darurat === 'kritis') gaps.push({ dot:'r', title:'Status Darurat Finansial', desc:'Tabungan kurang dari 1 bulan. Satu kejadian tak terduga bisa memaksamu berutang besar hari ini juga.' });
   else if (a.darurat === 'tipis') gaps.push({ dot:'a', title:'Dana Darurat Tipis', desc:'Tabungan 1-3 bulan sangat rawan habis jika terjadi risiko kesehatan atau kehilangan income.' });
 
-  if (effectiveProteksi === 'kosong') gaps.push({ dot:'r', title:'Belum ada proteksi sama sekali', desc:'Kondisi sangat rentan — satu risiko kecil bisa punya dampak finansial fatal.' });
+  if (effectiveProteksi === 'tidak_yakin') gaps.push({ dot:'r', title:'Status proteksi abu-abu', desc:'Punya asuransi tapi tidak tahu isinya sangat berisiko saat butuh klaim darurat.' });
   if (kerjaUsaha && a.proteksi === 'dasar') gaps.push({ dot:'r', title:'Wirausaha wajib punya proteksi mandiri', desc:'Kamu tidak mendapat asuransi dari kantor. Proteksi harus disiapkan sendiri segera.' });
-  if (effectiveProteksi === 'bpjs' || effectiveProteksi === 'dasar') gaps.push({ dot:'a', title:'Jiwa & Sakit Kritis belum terlindungi', desc:'BPJS menanggung biaya RS — tapi tidak mengganti penghasilanmu yang hilang jika sakit keras.' });
+  if (!punyaSwasta && effectiveProteksi !== 'tidak_yakin') gaps.push({ dot:'a', title:'Belum ada asuransi kesehatan swasta', desc:'Mengandalkan BPJS/Kantor berarti harus siap antre dan ada batasan cover RS.' });
   if (a.kritis === 'rentan' || a.kritis === 'tipis') gaps.push({ dot:'r', title:'Tidak ada backup jika terkena sakit keras', desc:'Jika harus berhenti kerja 6–18 bulan, tidak ada yang menanggung cicilan dan kebutuhan keluargamu.' });
   
   if (!isSandwich && (a.jiwa === 'rentan' || a.jiwa === 'tipis') && punyaTanggungan) {
@@ -1014,7 +998,7 @@ function buildResult() {
   if (a.kritis === 'rentan' || a.kritis === 'tipis') impacts.push(`<strong>Sakit keras berarti stop penghasilan.</strong> Tanpa asuransi kritis, tabunganmu akan terkuras habis hanya dalam hitungan bulan untuk biaya hidup.`);
   if (!isSandwich && (a.jiwa === 'rentan' || a.jiwa === 'tipis') && punyaTanggungan) impacts.push(`<strong>Mewariskan beban.</strong> Jika pencari nafkah tiada, keluarga akan menghadapi kehilangan sekaligus kesulitan ekonomi mendadak.`);
   if (cicilanBerat) impacts.push(`<strong>Cicilan tetap berjalan.</strong> KPR dan hutang tetap ditagih bank meski kamu sedang sakit keras di RS.`);
-  if (usiaMuda && belumAda) impacts.push(`<strong>Menunda = Makin Mahal.</strong> Premi termurah dan termudah disetujui adalah di usiamu saat ini.`);
+  if (usiaMuda && !punyaSwasta) impacts.push(`<strong>Menunda = Makin Mahal.</strong> Premi termurah dan termudah disetujui adalah di usiamu saat ini.`);
   if (impacts.length === 0) impacts.push(`<strong>Inflasi Medis 10-15% per tahun.</strong> Plafon asuransimu mungkin tidak akan cukup menanggung biaya RS 5 tahun dari sekarang.`);
 
   const impactHtml = impacts.slice(0,2).map((t,i)=>`<div class="impact-item"><div class="impact-num">${i+1}</div><div class="impact-text">${t}</div></div>`).join('');
@@ -1032,9 +1016,9 @@ function buildResult() {
   /* ── EDUKASI BUDGET ── */
   const edukasiBudget = `
     <div class="budget-fit-note" style="margin-bottom:16px;">
-      💡 <strong>Aturan Alokasi Ideal:</strong><br><br>
-      • <strong>Kesehatan:</strong> Batasi maksimal <strong>7%</strong> dari income. Biar uang bulananmu tetap aman dari inflasi RS.<br><br>
-      • <strong>Jiwa & Kritis:</strong> Ambil dari pos <strong>Tabungan/Investasi (10-20% income)</strong>. Karena polis ini berfungsi seperti deposito yang otomatis mencetak aset besar, uangnya tidak hangus.
+      💡 <strong>Golden Rules Alokasi Budget:</strong><br><br>
+      • <strong>Asuransi Kesehatan (Maks. 7% Income):</strong> Sisihkan dari pos pengeluaran rutin sebagai "biaya keamanan" agar tabungan utamamu tidak bocor karena inflasi medis.<br><br>
+      • <strong>Asuransi Jiwa & Kritis (10% dari Pos Tabungan):</strong> Alokasikan dari budget tabungan/investasimu. Karena polis seperti LegacyMax & CI Hasanah mengembalikan premi utuh saat kamu masih hidup, ini dihitung sebagai pemindahan aset masa depan, bukan pengeluaran hangus.
     </div>
   `;
 
@@ -1048,7 +1032,7 @@ function buildResult() {
   
   const topPrioName = sorted[0] && INFO[sorted[0]] ? INFO[sorted[0]].name : 'Konsultasi Perencanaan';
   
-  const ctaShortName = { jiwa: 'LegacyMax', kesehatan: 'Asuransi Kesehatan', kritis: 'CI Hasanah', pendidikan: 'Asuransi Pendidikan' };
+  const ctaShortName = { jiwa: 'LegacyMax', kesehatan: 'Asuransi Kesehatan', kritis: 'CI Hasanah' };
   const ctaBtnText = sorted[0] && ctaShortName[sorted[0]] ? `Dapat Estimasi ${ctaShortName[sorted[0]]}` : `Dapat Estimasi Premi Sesuai Kondisimu`;
 
   const waMsg = encodeURIComponent(
@@ -1064,7 +1048,7 @@ function buildResult() {
     `• Proteksi saat ini: ${proteksiLabel[a.proteksi] || '-'}\n`+
     `• Kondisi kesehatan: ${kondisiLabel[a.kondisi_diri] || '-'}\n`+
     `• Riwayat keluarga: ${riwayatLabel[a.riwayat] || '-'}\n`+
-    `• Paling khawatir: ${takutL[a.takut] || '-'}\n\n`+
+    `• Paling khawatir: ${takutLabel()}\n\n`+
     `🎯 *Prioritas Utama:* ${topPrioName}\n\n`+
     `${mulaiMsg[a.mulai]||''}`
   );
@@ -1169,10 +1153,23 @@ function buildReviewResult(nm, a) {
   };
 
   const penghasilanL = { rendah:'< Rp 5jt/bln', menengah:'Rp 5–15jt/bln', tinggi:'Rp 15–30jt/bln', premium:'> Rp 30jt/bln' };
-  const kerjaLabel = { karyawan:'Karyawan tetap', usaha:'Wirausaha/Freelance', keduanya:'Karyawan & Usaha', belum:'Belum bekerja' };
+  const kerjaLabel = { karyawan:'Karyawan tetap', usaha:'Wirausaha/Freelance', keduanya:'Karyawan & Usaha' };
+  const proteksiLabel = { swasta:'Swasta + BPJS + Kantor', dasar:'BPJS + Asuransi Kantor', bpjs:'Hanya BPJS', kosong:'Belum ada', tidak_yakin:'Ada tapi tidak yakin' };
   const kondisiLabel = { sehat:'Sehat', ada_kondisi:'Ada kondisi terdiagnosis', pernah_sakit:'Pernah sakit berat (sembuh)', pengobatan:'Sedang pengobatan rutin' };
   const riwayatLabel = { rendah:'Tidak ada', sedang:'Ada 1 orang', tinggi:'Ada 2+ orang' };
   const cicilanLabel = { bebas:'Bebas hutang', ringan:'Ringan (10-25%)', besar:'Cukup besar (25-50%)', berat:'Sangat berat (>50%)' };
+
+  // Fallback WA Label untuk opsi dinamis
+  const takutLabel = () => {
+    if(a.takut === 'rs') return "Tagihan RS yang tiba-tiba";
+    if(a.takut === 'income') return "Penghasilan terhenti total karena sakit";
+    if(a.takut === 'jiwa') {
+        if(a.tanggungan === 'sendiri') return "Meninggalkan beban hutang ke keluarga";
+        if(a.tanggungan.includes('sandwich')) return "Orang tua kehilangan penopang hidup";
+        return "Keluarga kehilangan nafkah jika saya tiada";
+    }
+    return "-";
+  };
 
   const waMsg = encodeURIComponent(
     `Halo ${AGENT.name}! 👋\n\n`+
