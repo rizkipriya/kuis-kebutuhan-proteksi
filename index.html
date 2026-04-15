@@ -4,10 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Temukan Asuransi yang Kamu Butuhkan</title>
+<meta name="description" content="Kuis 1 menit untuk bantu kamu temukan proteksi yang paling mendesak untuk kondisimu — gratis & sesuai prinsip Syariah.">
 <meta property="og:title" content="Temukan Asuransi yang Kamu Butuhkan">
 <meta property="og:description" content="Kuis 1 menit untuk bantu kamu temukan proteksi yang paling mendesak untuk kondisimu — gratis & sesuai prinsip Syariah.">
 <meta property="og:image" content="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=1200&auto=format&fit=crop">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://kuis-asuransi-syariah.netlify.app/">
+
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -43,6 +46,16 @@ body {
 .screen { display:none; }
 .screen.active { display:flex; flex-direction:column; min-height:100vh; animation:rise .25s ease both; }
 @keyframes rise { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* ═══ TOAST NOTIFICATION ═══ */
+.toast {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
+  background: var(--ink); color: white; padding: 12px 24px; border-radius: 30px;
+  font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 9999; 
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15); text-align: center; width: max-content;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* ═══ INTRO ═══ */
 .intro-hero {
@@ -138,7 +151,6 @@ body {
 .q-text { font-size:20px; font-weight:800; color:var(--ink); line-height:1.3; letter-spacing:-.3px; margin-bottom:6px; }
 .q-context { font-size:12px; color:var(--ink3); line-height:1.6; margin-bottom:20px; font-style:italic; }
 
-/* FIX #6: .warn-badge CSS yang hilang */
 .warn-badge {
   background:#fff3cd; border:1px solid #f0c040;
   border-radius:8px; padding:10px 12px;
@@ -194,7 +206,6 @@ body {
 .btn-next.on:active { opacity:.88; }
 
 /* ═══ RESULT ═══ */
-/* FIX #10: Padding bawah lebih besar untuk layar kecil */
 .result-body { flex:1; padding-bottom:200px; }
 
 .res-hero { background:var(--blue); padding:32px 22px 28px; }
@@ -359,13 +370,12 @@ body {
   cursor:pointer; transition:all .15s;
 }
 .btn-share:active { background:var(--line2); transform:scale(.99); }
-
-.footer-note { font-size:10.5px; color:var(--ink3); text-align:center; margin-top:10px; line-height:1.4; }
 </style>
 </head>
 <body>
 
-<!-- ══ INTRO ══ -->
+<div id="toast" class="toast">Tersalin ke clipboard!</div>
+
 <div class="screen active" id="s-intro">
   <div class="intro-hero">
     <div class="agent-pill">
@@ -384,7 +394,7 @@ body {
     <div class="field-label">Siapa namamu? (Opsional)</div>
     <input type="text" class="field-input" id="u-name" placeholder="Ketik namamu di sini..." maxlength="30" autocomplete="off">
     <button class="btn-start" onclick="go()">Mulai Cek Prioritas Saya →</button>
-    <div class="social-proof">🔥 Bergabung dengan <strong>1,248+</strong> keluarga yang sudah bersiap.</div>
+    <div class="social-proof" id="dynamic-counter">🔥 Bergabung dengan <strong>1.248+</strong> keluarga yang sudah bersiap.</div>
     <div class="no-risk">
       <div class="nr-item"><div class="nr-dot"></div>Tanpa Tekanan Beli</div>
       <div class="nr-item"><div class="nr-dot"></div>Data Tidak Di-Spam</div>
@@ -392,12 +402,11 @@ body {
   </div>
 </div>
 
-<!-- ══ QUIZ ══ -->
 <div class="screen" id="s-quiz">
   <div class="quiz-bar">
     <div class="quiz-bar-top">
       <span class="phase-lbl" id="q-phase-lbl">Situasi</span>
-      <span class="q-counter" id="q-counter">1 / 12</span>
+      <span class="q-counter" id="q-counter">0 / 11</span>
     </div>
     <div class="prog-track"><div class="prog-fill" id="q-prog" style="width:0%"></div></div>
   </div>
@@ -410,7 +419,6 @@ body {
   </div>
 </div>
 
-<!-- ══ RESULT ══ -->
 <div class="screen" id="s-result">
   <div class="result-body" id="result-body"></div>
   <div class="sticky-wa-footer" id="sticky-wa"></div>
@@ -431,7 +439,21 @@ const PRODUCTS = {
   kesehatan: "Asuransi Kesehatan Allianz Syariah",
   kritis:    "AlliSya CI Hasanah"
 };
-/* ══════════════════════════════ */
+
+// Pembersih otomatis nomor WA
+function getSafeWa() {
+  let safeWa = AGENT.wa.replace(/\D/g, ''); 
+  if (safeWa.startsWith('0')) return '62' + safeWa.slice(1);
+  return safeWa;
+}
+
+// Fungsi proteksi check (Review Routing)
+function checkProtected(a) {
+  const isSW = ['sandwich_single','sandwich_menikah'].includes(a.tanggungan);
+  const punyaT = ['pasangan','keluarga'].includes(a.tanggungan) || isSW;
+  const ep = (['usaha','keduanya'].includes(a.kerja) && a.proteksi==='dasar') ? 'bpjs' : a.proteksi;
+  return ep === 'swasta' && a.kondisi_diri === 'sehat' && a.kritis === 'aman' && (!punyaT || a.jiwa === 'aman') && a.riwayat !== 'tinggi';
+}
 
 /* ─── QUESTIONS ─────────────────────────── */
 const QS = [
@@ -594,6 +616,7 @@ const QS = [
   },
   {
     phase:"N — Kalkulasi Solusi", id:"n1",
+    skipIf:(ans)=>checkProtected(ans),
     transition:{ color:"green", label:"Tahap Akhir", title:"Menghitung Angka Pasti.", sub:"Agar rekomendasi yang keluar nanti benar-benar akurat dan sesuai dengan standar hidupmu." },
     emoji:"📊",
     text:"Berapa perkiraan pengeluaran rutin / biaya hidup keluargamu per bulan?",
@@ -610,14 +633,23 @@ const QS = [
 /* ─── STATE ─────────────────────────── */
 let cur = 0, ans = {}, uName = "";
 let activeQs = [];
+window.scoreAnimTimer = null; // Global timer untuk clear saat retry
 
-// FIX #5: Hitung total STATIS di awal untuk stabilkan progress bar
-// Kita hitung dua path: dengan & tanpa skipIf i2
-const TOTAL_WITH_I2    = QS.filter(q=>!q.skipIf).length + 1; // semua
-const TOTAL_WITHOUT_I2 = QS.filter(q=>!q.skipIf).length;    // tanpa i2
+// Menghitung progress secara akurat berdasarkan rentang pertanyaan (0 hingga targetIdx)
+function calculateProgress(targetIdx) {
+  let count = 0;
+  for(let i=0; i<=targetIdx; i++) {
+    if(!activeQs[i].skipIf || !activeQs[i].skipIf(ans)) count++;
+  }
+  return count;
+}
 
-function getStaticTotal(a) {
-  return a.tanggungan === 'sendiri' ? TOTAL_WITHOUT_I2 : TOTAL_WITH_I2;
+function getTotalQs() {
+  let total = 0;
+  for(let q of QS) {
+    if(!q.skipIf || !q.skipIf(ans)) total++;
+  }
+  return total;
 }
 
 /* ─── INIT ─────────────────────────── */
@@ -628,14 +660,29 @@ function getStaticTotal(a) {
   const nm = document.getElementById('av-name-intro');
   if(nm) nm.textContent = AGENT.name;
 
-  // FIX #1: Validasi localStorage lebih ketat
+  const nameInput = document.getElementById('u-name');
+  if (nameInput) {
+    nameInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); go(); }
+    });
+  }
+
+  /* --- SIMULASI COUNTER SOCIAL PROOF --- */
+  const baseDate = new Date("2026-04-10").getTime();
+  const now = new Date().getTime();
+  const daysPassed = Math.max(0, Math.floor((now - baseDate) / (1000 * 60 * 60 * 24)));
+  const simulatedCount = 1248 + (daysPassed * 5) + Math.floor(Math.random() * 3);
+  const counterEl = document.getElementById('dynamic-counter');
+  if (counterEl) {
+    counterEl.innerHTML = `🔥 Bergabung dengan <strong>${simulatedCount.toLocaleString('id-ID')}+</strong> keluarga yang sudah bersiap.`;
+  }
+
   try {
     const savedAns  = localStorage.getItem('asuransi_quiz_ans');
     const savedName = localStorage.getItem('asuransi_quiz_name');
     const savedCur  = localStorage.getItem('asuransi_quiz_cur');
     if(savedAns) {
       const parsed = JSON.parse(savedAns);
-      // Hanya restore jika ada minimal 3 jawaban valid dan belum selesai
       const keysAnswered = Object.keys(parsed).length;
       if(keysAnswered >= 3 && keysAnswered < QS.length) {
         ans    = parsed;
@@ -646,7 +693,6 @@ function getStaticTotal(a) {
         show('s-quiz');
         paint();
       } else {
-        // Data tidak lengkap atau sudah selesai — bersihkan
         clearSession();
       }
     }
@@ -682,19 +728,15 @@ function go() {
 
 function paint() {
   const q = activeQs[cur];
-
-  // FIX #5: Progress counter stabil — gunakan total statis berdasarkan jawaban s1
-  const staticTotal = getStaticTotal(ans);
-  let answeredSoFar = 0;
-  for(let i=0; i<=cur; i++) {
-    if(!activeQs[i].skipIf || !activeQs[i].skipIf(ans)) answeredSoFar++;
-  }
-  const pct = Math.round((answeredSoFar / staticTotal) * 100);
+  
+  const staticTotal = getTotalQs();
+  // Di pertanyaan aktif, kita hanya hitung yang SUDAH LEWAT (sebelumnya)
+  const answeredCount = cur === 0 ? 0 : calculateProgress(cur - 1);
+  const pct = Math.round((answeredCount / staticTotal) * 100);
 
   document.getElementById('q-phase-lbl').textContent = q.phase;
-  document.getElementById('q-counter').textContent   = `${answeredSoFar} / ${staticTotal}`;
+  document.getElementById('q-counter').textContent   = `${answeredCount} / ${staticTotal}`;
   document.getElementById('q-prog').style.width      = pct + '%';
-
   document.getElementById('btn-back').classList.toggle('hidden', cur === 0);
 
   const saved = ans[q.key];
@@ -708,7 +750,6 @@ function paint() {
 
   const ctxHtml = q.context ? `<div class="q-context">${q.context}</div>` : '';
 
-  // FIX #6: .warn-badge sekarang ada di CSS
   const warnHtml = (q.key==='proteksi' && ['usaha','keduanya'].includes(ans.kerja))
     ? `<div class="warn-badge">⚠️ Sebagai wirausaha/freelance, kamu biasanya tidak mendapat asuransi dari kantor. Pilih yang paling sesuai kenyataan ya.</div>` : '';
 
@@ -741,7 +782,7 @@ function isLastVisible() {
 }
 
 function pick(el, key, val) {
-  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  document.getElementById('q-body').querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
   el.classList.add('sel');
   ans[key] = val;
   saveSession();
@@ -752,9 +793,14 @@ function pick(el, key, val) {
 
 function nxt() {
   if(!ans[activeQs[cur].key]) return;
+  
   if(cur < activeQs.length-1) {
     cur++;
-    while(cur < activeQs.length-1 && activeQs[cur].skipIf && activeQs[cur].skipIf(ans)) cur++;
+    while(cur < activeQs.length-1 && activeQs[cur].skipIf && activeQs[cur].skipIf(ans)) {
+        // Hapus sisa jawaban jika dilewati oleh logika skip (Clean up zombie keys)
+        delete ans[activeQs[cur].key];
+        cur++;
+    }
     if(activeQs[cur].skipIf && activeQs[cur].skipIf(ans)) { buildResult(); return; }
     paint();
     window.scrollTo(0,0);
@@ -780,29 +826,24 @@ function prev() {
 function calculateScore(a) {
   let sc = 0;
 
-  // 1. Dana Darurat (max 15)
   if(a.darurat==='aman')  sc+=15;
   else if(a.darurat==='cukup') sc+=10;
   else if(a.darurat==='tipis') sc+=5;
 
-  // 2. Proteksi existing (max 25)
   const ep = (['usaha','keduanya'].includes(a.kerja) && a.proteksi==='dasar') ? 'bpjs' : a.proteksi;
   if(ep==='swasta')      sc+=25;
   else if(ep==='dasar')  sc+=15;
   else if(ep==='bpjs')   sc+=8;
   else if(ep==='tidak_yakin') sc+=3;
 
-  // 3. Kesiapan RS (max 15)
   if(a.rs==='aman')     sc+=15;
   else if(a.rs==='dasar')   sc+=8;
   else if(a.rs==='tabungan') sc+=3;
 
-  // 4. Kritis (max 20)
   if(a.kritis==='aman')  sc+=20;
   else if(a.kritis==='cukup') sc+=6;
   else if(a.kritis==='tipis') sc+=2;
 
-  // 5. Jiwa / Cicilan (max 20)
   const isSW = ['sandwich_single','sandwich_menikah'].includes(a.tanggungan);
   const punya = ['pasangan','keluarga'].includes(a.tanggungan) || isSW;
   if(punya) {
@@ -815,7 +856,6 @@ function calculateScore(a) {
     else if(a.cicilan==='besar')  sc+=4;
   }
 
-  // FIX #7: Pengeluaran masuk ke scoring (bonus kecil jika sudah isi = siap evaluasi)
   if(a.pengeluaran) sc+=3;
 
   // ── PENALTY ──
@@ -844,19 +884,31 @@ function calculateScore(a) {
 }
 
 /* ══════════════════════════════
-   WA LINK UPDATER
-   FIX #3: Dipanggil setelah DOM ready dengan requestAnimationFrame
+   UTILITIES
 ══════════════════════════════ */
 let _baseWaMsg = "";
 
 function updateWaLink() {
   const timeEl = document.getElementById('wa-time');
-  const btnEl  = document.getElementById('wa-btn-link');
-  if(!timeEl || !btnEl || !_baseWaMsg) return;
+  if(!timeEl || !_baseWaMsg) return;
   const timeText = timeEl.value === 'weekday'
     ? "Saya paling pas di hari kerja (Senin-Jumat), jam istirahat atau sore/malam ya."
     : "Saya paling pas di akhir pekan (Sabtu/Minggu) waktu lagi santai.";
-  btnEl.href = `https://wa.me/${AGENT.wa}?text=${encodeURIComponent(_baseWaMsg + "\n\n" + timeText)}`;
+  
+  const targetLink = `https://wa.me/${getSafeWa()}?text=${encodeURIComponent(_baseWaMsg + "\n\n" + timeText)}`;
+  
+  document.querySelectorAll('.wa-link-btn').forEach(btn => {
+    btn.href = targetLink;
+  });
+}
+
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if(t) {
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
 }
 
 function shareQuiz() {
@@ -864,15 +916,31 @@ function shareQuiz() {
   if(navigator.share) {
     navigator.share({ title:'Cek Prioritas Asuransimu', text:'Aku baru cek proteksi finansialku, kamu juga coba yuk!', url });
   } else {
-    navigator.clipboard.writeText(url).then(()=>alert('Link kuis berhasil disalin! Bagikan ke teman kamu.')).catch(()=>alert('Copy link ini: ' + url));
+    navigator.clipboard.writeText(url).then(()=>showToast('Link tersalin! Bagikan ke teman kamu.')).catch(()=>showToast('Gagal copy link.'));
   }
+}
+
+function animateScore(element, target, duration) {
+    if(!element) return;
+    let start = 0;
+    const increment = target / (duration / 16);
+    window.scoreAnimTimer = setInterval(() => {
+        if(!element) { clearInterval(window.scoreAnimTimer); return; }
+        start += increment;
+        if (start >= target) {
+            clearInterval(window.scoreAnimTimer);
+            element.textContent = target;
+        } else {
+            element.textContent = Math.floor(start);
+        }
+    }, 16);
 }
 
 /* ══════════════════════════════
    BUILD RESULT
 ══════════════════════════════ */
 function buildResult() {
-  clearSession(); // Selesai — hapus session
+  clearSession(); 
   const a   = ans;
   const nm  = uName || "Kak";
   const sc  = calculateScore(a);
@@ -892,9 +960,7 @@ function buildResult() {
   const cicBerat   = ['besar','berat'].includes(a.cicilan);
   const usiaMuda   = a.usia === 'muda';
 
-  // FIX #2: isAlreadyProtected kembali ada dan routing ke buildReviewResult
-  const isAlreadyProtected = punyaSW && a.kondisi_diri==='sehat' && kritisAman && jiwaAman;
-  if(isAlreadyProtected) { buildReviewResult(nm, a, sc, ep, adaK, riwTin); return; }
+  if(checkProtected(a)) { buildReviewResult(nm, a, sc, ep, adaK, riwTin); return; }
 
   /* ── PRIORITY ENGINE ── */
   let prioritas = [];
@@ -909,17 +975,14 @@ function buildResult() {
   }
   if(riwTin && !prioritas.includes('kritis')) prioritas.push('kritis');
   if(adaK && !prioritas.includes('kesehatan') && (rsUpgrade || ep==='tidak_yakin')) prioritas.push('kesehatan');
-  if(prioritas.length===0) {
-    if(!punyaSW) prioritas.push('kesehatan');
-    else if(punyaT) prioritas.push('jiwa');
-    else prioritas.push('kritis');
+  if(prioritas.length===0) prioritas.push('optimasi');
+
+  if(riwTin && prioritas.includes('kritis') && prioritas.indexOf('kritis')>1) {
+    prioritas = prioritas.filter(p => p !== 'kritis');
+    const targetIdx = prioritas.indexOf('jiwa') >= 0 ? 1 : 0;
+    prioritas.splice(targetIdx, 0, 'kritis');
   }
 
-  // Re-order
-  if(riwTin && prioritas.includes('kritis') && prioritas.indexOf('kritis')>1) {
-    prioritas.splice(prioritas.indexOf('kritis'),1);
-    prioritas.splice(prioritas.indexOf('jiwa')>=0?1:0,0,'kritis');
-  }
   let reordered = false;
   if(!reordered && a.takut==='rs' && rsUpgrade && prioritas.includes('kesehatan') && prioritas[0]!=='kesehatan') {
     prioritas.splice(prioritas.indexOf('kesehatan'),1); prioritas.unshift('kesehatan'); reordered=true;
@@ -942,32 +1005,37 @@ function buildResult() {
   const sorted = prioritas.slice(0,3);
 
   /* ── LOOKUPS ── */
+  const usiaL = { muda:"< 30 th", dewasa:"30–40 th", matang:"40–50 th", senior:"> 50 th" };
+  const riwayatL = { rendah:"Tidak ada", sedang:"Ada 1 orang", tinggi:"Ada 2+ orang" };
+  const kondisiLbl = { sehat:'Sehat', ada_kondisi:'Ada kondisi khusus', pernah_sakit:'Pernah sakit berat', pengobatan:'Sedang pengobatan' };
+  
+  // FIX: Estimasi UP Jiwa (10x Pendapatan Tahunan)
   const pengL = { menengah:'Rp 5–15 Juta/bln', tinggi:'Rp 15–30 Juta/bln', premium:'> Rp 30 Juta/bln' };
-  const upJ   = { menengah:'Rp 1,5 – 4,5 Miliar', tinggi:'Rp 4,5 – 9 Miliar', premium:'di atas Rp 9 Miliar' };
+  const upJ   = { menengah:'Rp 600 Juta – 1,8 Miliar', tinggi:'Rp 1,8 – 3,6 Miliar', premium:'di atas Rp 3,6 Miliar' };
   const upK   = { menengah:'Rp 300 – 900 Juta', tinggi:'Rp 900 Juta – 1,8 Miliar', premium:'di atas Rp 1,8 Miliar' };
-  const tL    = { sendiri:"masih single", pasangan:"sudah berkeluarga", keluarga:"tulang punggung keluarga inti", sandwich_single:"single menanggung orang tua (Sandwich Gen)", sandwich_menikah:"menanggung keluarga & orang tua (Sandwich Gen)" };
+  
+  const tL    = { sendiri:"masih single", pasangan:"sudah berkeluarga", keluarga:"tulang punggung keluarga", sandwich_single:"single menanggung orang tua (Sandwich Gen)", sandwich_menikah:"menanggung keluarga & orang tua (Sandwich Gen)" };
   const kerjaLbl = { karyawan:'Karyawan tetap', usaha:'Wirausaha/Freelance', keduanya:'Karyawan & Usaha' };
-  const protLbl  = { swasta:'Swasta + BPJS + Kantor', dasar:'BPJS + Asuransi Kantor', bpjs:'Hanya BPJS', tidak_yakin:'Ada tapi tidak yakin isinya' };
+  const protLbl  = { swasta:'Swasta + BPJS', dasar:'BPJS + Asuransi Kantor', bpjs:'Hanya BPJS', tidak_yakin:'Ada tapi tidak yakin isinya' };
   const cicLbl   = { bebas:'Bebas hutang', ringan:'Ringan (10–25%)', besar:'Cukup besar (25–50%)', berat:'Sangat berat (>50%)' };
   const takutLbl = ()=>{
     if(a.takut==='rs') return "Tagihan RS yang tiba-tiba";
     if(a.takut==='income') return "Penghasilan terhenti total karena sakit";
     if(a.takut==='jiwa') {
-      if(a.tanggungan==='sendiri') return "Meninggalkan beban hutang ke keluarga";
+      if(a.tanggungan==='sendiri') return "Meninggalkan beban hutang";
       if((a.tanggungan||'').includes('sandwich')) return "Orang tua kehilangan penopang hidup";
-      return "Keluarga kehilangan nafkah jika saya tiada";
+      return "Keluarga kehilangan nafkah";
     }
     return "-";
   };
 
-  /* ── INFO PRODUK ── */
-  // FIX #9: Guard agar tidak crash jika key tidak ada
+  /* ── INFO PRODUK (COMPLIANCE FIX) ── */
   const INFO = {
     jiwa: {
       icon:"☂️", name:`Asuransi Jiwa (${PRODUCTS.jiwa})`,
       reason:()=>{
-        const upN = `💡 <em style="font-size:12px;color:var(--ink3);">${PRODUCTS.jiwa}: premi kamu tidak hangus — dikembalikan utuh jika masih hidup di akhir masa perlindungan, sambil warisan aktif hingga usia 120 tahun.</em>`;
-        const upT = a.pengeluaran ? ` <br><br>💡 <em>Estimasi UP ideal: <strong>${upJ[a.pengeluaran]}</strong>.</em><br><br>${upN}` : `<br><br>${upN}`;
+        const upN = `💡 <em style="font-size:12px;color:var(--ink3);">Catatan: ${PRODUCTS.jiwa} memiliki fitur Manfaat Akhir Kontrak. Berbeda dengan asuransi tradisional yang hangus, kamu berpotensi menerima kembali <strong>hingga 100% total kontribusi</strong> (premi) yang telah dibayarkan jika tidak ada klaim hingga akhir masa perlindungan (S&K berlaku).</em>`;
+        const upT = a.pengeluaran ? ` <br><br>💡 <em>Estimasi UP ideal: <strong>${upJ[a.pengeluaran]}</strong>. (Mendapatkan UP di atas Rp 500 Juta akan memberimu potongan kontribusi spesial dari Allianz).</em><br><br>${upN}` : `<br><br>${upN}`;
         if(a.tanggungan==='sandwich_menikah') return `Keluarga dan orang tuamu bergantung padamu bersamaan. Jika terjadi sesuatu, mereka butuh jaminan agar tidak jatuh miskin di hari yang sama.${upT}`;
         if(a.tanggungan==='sandwich_single') return `Orang tuamu bergantung pada jerih payahmu. Ini memastikan mereka tetap hidup layak di masa tua jika kamu tiada.${upT}`;
         if(a.tanggungan==='keluarga') return `Keluargamu menggantungkan hidup padamu. Ini memastikan mereka tetap bisa bayar cicilan dan sekolah meski kamu tidak ada.${upT}`;
@@ -987,12 +1055,16 @@ function buildResult() {
     kritis: {
       icon:"🧬", name:`Asuransi Sakit Kritis (${PRODUCTS.kritis})`,
       reason:()=>{
-        const upN = `💡 <em style="font-size:12px;color:var(--ink3);">${PRODUCTS.kritis}: premi juga tidak hangus — dikembalikan utuh jika kamu tetap sehat hingga akhir masa perlindungan.</em>`;
+        const upN = `💡 <em style="font-size:12px;color:var(--ink3);">Catatan: ${PRODUCTS.kritis} juga memiliki potensi Manfaat Akhir Kontrak pengembalian kontribusi jika tidak ada klaim hingga akhir masa perlindungan (S&K berlaku).<br>*Memiliki Masa Tunggu 80 hari kalender sejak polis aktif.</em>`;
         const upT = a.pengeluaran ? ` <br><br>💡 <em>Estimasi UP cair yang disarankan: <strong>${upK[a.pengeluaran]}</strong>.</em><br><br>${upN}` : `<br><br>${upN}`;
         if(riwTin) return `Riwayat penyakit di keluargamu adalah sinyal risiko nyata. ${PRODUCTS.kritis} mencairkan uang tunai saat didiagnosis — untuk berobat sekaligus mengganti gajimu.${upT}`;
         if(!punyaT) return `Sebagai single, kamu harus menjaga dirimu sendiri. Kalau sakit keras dan stop kerja, ini memberimu dana tunai untuk mengganti biaya hidup dan cicilanmu.${upT}`;
         return `Penyakit kritis menghentikan penghasilan selama masa pemulihan. Perlindungan ini memastikan roda ekonomi keluargamu tetap berjalan saat kamu fokus sembuh.${upT}`;
       }
+    },
+    optimasi: {
+      icon:"🔍", name:"Optimasi Polis & Penyesuaian Inflasi",
+      reason: () => `Fondasi asuransimu sudah terbangun. Namun dengan inflasi medis 10-15% per tahun, limit rawat inap dan nilai Uang Pertanggungan dari polis lamamu perlahan tergerus. Prioritasmu saat ini adalah memastikan semuanya masih relevan dengan biaya hidup hari ini.`
     }
   };
 
@@ -1057,7 +1129,6 @@ function buildResult() {
     { cls:'second', tag:'Prioritas 2', rank:'2' },
     { cls:'third',  tag:'Lengkapi Dengan', rank:'3' }
   ];
-  // FIX #9: Guard jika INFO[key] tidak ada
   const prioHtml = sorted.map((key,i)=>{
     const info = INFO[key];
     if(!info) return '';
@@ -1075,17 +1146,28 @@ function buildResult() {
     `Saya baru selesai kuis dan skor keamanan saya *${sc}/100* (Status: ${scLabel}).\n\n` +
     (uName && uName!=='Kak' ? `Nama: ${uName}\n\n` : '') +
     `📋 *Data Profil Saya:*\n` +
+    `• Usia: ${usiaL[a.usia]||'-'}\n` +
     `• Tanggungan: ${tL[a.tanggungan]||'-'}\n` +
     `• Pekerjaan: ${kerjaLbl[a.kerja]||'-'}\n` +
-    `• Pengeluaran Bulanan: ${pengL[a.pengeluaran]||'Belum diisi'}\n` +
+    `• Pengeluaran Bulanan: ${pengL[a.pengeluaran]||'-'}\n` +
     `• Cicilan: ${cicLbl[a.cicilan]||'-'}\n` +
     `• Proteksi saat ini: ${protLbl[a.proteksi]||'-'}\n` +
+    `• Kondisi kesehatan: ${kondisiLbl[a.kondisi_diri]||'-'}\n` +
+    `• Riwayat keluarga: ${riwayatL[a.riwayat]||'-'}\n` +
     `• Paling khawatir: ${takutLbl()}\n\n` +
     `🎯 *Prioritas Utama:* ${topName}\n\n` +
-    `Tolong bantu saya buatkan estimasi solusi yang paling pas ya.`;
+    (sorted[0] === 'optimasi' ? `Tolong bantu saya review polis lama saya agar rapi dan tidak tumpang tindih ya.` : `Tolong bantu saya buatkan estimasi solusi yang paling pas ya.`);
 
-  const ctaTxt = "Tanya Rizki: Berapa yang Keluargamu Butuhkan?";
-  const kondisiNote = adaK ? `<div class="kondisi-note"><div class="kondisi-note-title">⚠️ Perhatian Khusus Kondisi Kesehatan</div><div class="kondisi-note-text">Karena ada riwayat medis, jangan tunda pengajuan. Semakin lama menunggu, semakin besar risiko pengajuan ditolak atau dikecualikan oleh pusat.</div></div>` : '';
+  const ctaTxt = sorted[0] === 'optimasi' ? "Minta Rizki Bantu Review Polis" : "Tanya Rizki: Berapa yang Keluargamu Butuhkan?";
+  
+  // FIX: Disclaimer Pre-Existing Kondisi Khusus
+  const kondisiNote = adaK ? `<div class="kondisi-note"><div class="kondisi-note-title">⚠️ Perhatian Khusus Kondisi Kesehatan</div><div class="kondisi-note-text">Kondisi medismu saat ini kemungkinan besar akan masuk pengecualian klaim (Pre-Existing) atau terkena masa tunggu. Jangan tunggu muncul penyakit baru, kunci status kesehatanmu yang tersisa hari ini juga.</div></div>` : '';
+
+  /* ── TIMESTAMP ── */
+  const dt = new Date();
+  const dateOpt = { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' };
+  const timeStr = dt.toLocaleDateString('id-ID', dateOpt).replace(' pukul', ' pukul').replace('.', ':');
+  const timestampHtml = `<div style="font-size:10.5px; color:var(--ink3); text-align:center; margin-bottom:16px; margin-top:-8px;">Analisa dibuat: ${timeStr} WIB</div>`;
 
   /* ── RENDER ── */
   document.getElementById('result-body').innerHTML = `
@@ -1095,13 +1177,15 @@ function buildResult() {
     </div>
 
     <div class="score-box">
-      <div class="score-circle" style="background:${scColor};">${sc}</div>
+      <div class="score-circle" style="background:${scColor};" id="final-score-val">0</div>
       <div class="score-info">
         <div class="score-lbl">Skor Keamanan Finansial</div>
         <div class="score-title" style="color:${scColor};">Status: ${scLabel}</div>
         <div class="score-bench">${scBench}</div>
       </div>
     </div>
+    ${timestampHtml}
+    
     <div style="font-size:13px;color:var(--ink2);text-align:center;margin:-8px 22px 16px;line-height:1.65;padding:0 8px;">${scMsg}</div>
 
     ${bdHtml}
@@ -1121,12 +1205,14 @@ function buildResult() {
     </div>
 
     <div class="r-section">
-      <div class="budget-note">
-        💡 <strong>Golden Rules Alokasi Budget:</strong><br><br>
-        • <strong>Asuransi Kesehatan (Maks. 7% Income):</strong> Sisihkan dari pos pengeluaran rutin — "biaya keamanan" agar tabungan tidak bocor karena inflasi medis.<br><br>
-        • <strong>Jiwa &amp; Kritis (10% dari Tabungan):</strong> LegacyMax &amp; CI Hasanah mengembalikan premi utuh saat kamu masih hidup — ini pemindahan aset, bukan pengeluaran hangus.
+      <div style="margin: 20px 0;">
+        <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Hubungi via WhatsApp" class="btn-wa wa-link-btn" style="box-shadow: none;">
+          <svg class="wa-svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Diskusikan Hasil Ini Gratis
+        </a>
       </div>
-      <button class="btn-retry" onclick="retry()">↺ Ulangi Kuis</button>
+
+      <button class="btn-retry" onclick="if(confirm('Yakin ingin mengulang kuis dari awal? Semua data sebelumnya akan terhapus.')) retry()">↺ Ulangi Kuis</button>
     </div>`;
 
   /* ── STICKY FOOTER ── */
@@ -1137,7 +1223,7 @@ function buildResult() {
       <option value="weekday">Hari Kerja (Jam Istirahat / Sore–Malam)</option>
       <option value="weekend">Akhir Pekan (Sabtu / Minggu)</option>
     </select>
-    <a href="#" id="wa-btn-link" target="_blank" class="btn-wa">
+    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Hubungi WhatsApp" class="btn-wa wa-link-btn">
       <svg class="wa-svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       ${ctaTxt}
     </a>
@@ -1146,39 +1232,42 @@ function buildResult() {
   stickyWA.classList.add('active');
 
   show('s-result');
-  // FIX #3: Panggil setelah DOM selesai render
   requestAnimationFrame(updateWaLink);
+  
+  if(window.scoreAnimTimer) clearInterval(window.scoreAnimTimer);
+  animateScore(document.getElementById('final-score-val'), sc, 1000);
 }
 
 /* ══════════════════════════════
    BUILD REVIEW RESULT
-   FIX #2: Fungsi ini sekarang benar-benar dipanggil
-   FIX #8: Tombol share ada di sini juga
 ══════════════════════════════ */
 function buildReviewResult(nm, a, sc, ep, adaK, riwTin) {
-  let scColor, scLabel, scMsg;
+  let scColor, scLabel, scMsg, scBench;
   if(sc>=85) {
     scColor='var(--green)'; scLabel='Sangat Aman';
+    scBench='Lebih aman dari 82% responden.';
     scMsg=`Alhamdulillah, fondasi keuanganmu sangat solid, ${nm}! Langkah selanjutnya hanya memastikan semua polis tetap relevan dengan harga hidup hari ini.`;
   } else if(sc>=55) {
     scColor='#d4860a'; scLabel='Perlu Waspada';
+    scBench='Lebih rentan dari 64% responden seusiamu.';
     scMsg=`Proteksimu sudah ada, ${nm}, tapi mungkin ada manfaat yang belum optimal atau belum mengejar inflasi medis. Mari kita pastikan uangmu bekerja maksimal.`;
   } else {
     scColor='var(--red)'; scLabel='Perlu Ditinjau';
+    scBench='Masuk 20% kondisi paling berisiko dari semua responden.';
     scMsg=`Ada risiko tersembunyi di balik proteksimu saat ini, ${nm}. Sangat disarankan untuk segera review polis lamamu sebelum ada yang terlewat.`;
   }
 
   const bd = [];
-  if(riwTin) bd.push('Riwayat penyakit genetik terdeteksi — pastikan polis lamamu sudah cover kondisi ini.');
-  if(a.kondisi_diri==='ada_kondisi'||a.kondisi_diri==='pengobatan') bd.push('Kondisi medis aktif butuh peninjauan waiting period dan exclusion polis.');
-  if(a.proteksi==='tidak_yakin') bd.push('Tidak tahu isi polis = berbahaya saat klaim darurat.');
-  if(a.rs!=='aman') bd.push('Limit rawat inap mungkin sudah tidak sesuai dengan harga kamar RS saat ini.');
-  if(adaK) bd.push('Riwayat medis perlu dikonsultasikan agar polis tidak lapse atau dikecualikan.');
+  if(riwTin) bd.push({ t:'bad', x:'Riwayat penyakit genetik terdeteksi — pastikan polis lamamu sudah cover kondisi ini.' });
+  if(a.kondisi_diri==='ada_kondisi'||a.kondisi_diri==='pengobatan') bd.push({ t:'bad', x:'Kondisi medis aktif butuh peninjauan waiting period dan exclusion polis.' });
+  if(a.proteksi==='tidak_yakin') bd.push({ t:'bad', x:'Tidak tahu isi polis = berbahaya saat klaim darurat.' });
+  if(a.rs!=='aman') bd.push({ t:'bad', x:'Limit rawat inap mungkin sudah tidak sesuai dengan harga kamar RS saat ini.' });
+  if(adaK) bd.push({ t:'bad', x:'Riwayat medis perlu dikonsultasikan agar polis tidak lapse atau dikecualikan.' });
 
   const bdHtml = bd.length ? `
     <div class="breakdown-box">
       <div class="bd-title">Fokus Review Polis Kamu:</div>
-      ${bd.slice(0,3).map(x=>`<div class="bd-item"><div class="bd-icon">🔻</div><div class="bd-text bad">${x}</div></div>`).join('')}
+      ${bd.slice(0,3).map(b=>`<div class="bd-item"><div class="bd-icon">🔻</div><div class="bd-text bad">${b.x}</div></div>`).join('')}
     </div>` : '';
 
   const reviewItems = [
@@ -1187,9 +1276,13 @@ function buildReviewResult(nm, a, sc, ep, adaK, riwTin) {
     { icon:"📋", title:"Kerapihan Dokumen & Status Polis", desc:"Pastikan semua polis aktif, beneficiary benar, dan mudah diklaim saat darurat." },
   ];
 
+  const usiaL = { muda:"< 30 th", dewasa:"30–40 th", matang:"40–50 th", senior:"> 50 th" };
+  const riwayatL = { rendah:"Tidak ada", sedang:"Ada 1 orang", tinggi:"Ada 2+ orang" };
+  const kondisiLbl = { sehat:'Sehat', ada_kondisi:'Ada kondisi khusus', pernah_sakit:'Pernah sakit berat', pengobatan:'Sedang pengobatan' };
   const pengL = { menengah:'Rp 5–15 Juta/bln', tinggi:'Rp 15–30 Juta/bln', premium:'> Rp 30 Juta/bln' };
   const kerjaLbl = { karyawan:'Karyawan tetap', usaha:'Wirausaha/Freelance', keduanya:'Karyawan & Usaha' };
-  const protLbl  = { swasta:'Swasta + BPJS + Kantor', dasar:'BPJS + Asuransi Kantor', bpjs:'Hanya BPJS', tidak_yakin:'Ada tapi tidak yakin isinya' };
+  const protLbl  = { swasta:'Swasta + BPJS', dasar:'BPJS + Asuransi Kantor', bpjs:'Hanya BPJS', tidak_yakin:'Ada tapi tidak yakin isinya' };
+  const cicLbl   = { bebas:'Bebas hutang', ringan:'Ringan (10–25%)', besar:'Cukup besar (25–50%)', berat:'Sangat berat (>50%)' };
   const tL = { sendiri:"masih single", pasangan:"sudah berkeluarga", keluarga:"tulang punggung keluarga", sandwich_single:"single menanggung orang tua (Sandwich Gen)", sandwich_menikah:"menanggung keluarga & orang tua (Sandwich Gen)" };
 
   _baseWaMsg =
@@ -1197,11 +1290,19 @@ function buildReviewResult(nm, a, sc, ep, adaK, riwTin) {
     `Saya baru isi kuis dan skor keamanan saya *${sc}/100* (Status: ${scLabel}).\n\n` +
     (uName && uName!=='Kak' ? `Nama: ${uName}\n\n` : '') +
     `📋 *Data Profil Saya:*\n` +
+    `• Usia: ${usiaL[a.usia]||'-'}\n` +
     `• Tanggungan: ${tL[a.tanggungan]||'-'}\n` +
     `• Pekerjaan: ${kerjaLbl[a.kerja]||'-'}\n` +
-    `• Pengeluaran Bulanan: ${pengL[a.pengeluaran]||'Belum diisi'}\n` +
-    `• Proteksi saat ini: ${protLbl[a.proteksi]||'-'}\n\n` +
+    `• Pengeluaran Bulanan: ${pengL[a.pengeluaran]||'-'}\n` +
+    `• Proteksi saat ini: ${protLbl[a.proteksi]||'-'}\n` +
+    `• Kondisi kesehatan: ${kondisiLbl[a.kondisi_diri]||'-'}\n` +
+    `• Riwayat keluarga: ${riwayatL[a.riwayat]||'-'}\n\n` +
     `Saya mau minta tolong direview polis lama saya agar rapi dan tidak ada yang tumpang tindih atau terlewat.`;
+
+  const dt = new Date();
+  const dateOpt = { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' };
+  const timeStr = dt.toLocaleDateString('id-ID', dateOpt).replace(' pukul', ' pukul').replace('.', ':');
+  const timestampHtml = `<div style="font-size:10.5px; color:var(--ink3); text-align:center; margin-bottom:16px; margin-top:-8px;">Analisa dibuat: ${timeStr} WIB</div>`;
 
   document.getElementById('result-body').innerHTML = `
     <div class="res-hero green">
@@ -1210,13 +1311,15 @@ function buildReviewResult(nm, a, sc, ep, adaK, riwTin) {
     </div>
 
     <div class="score-box">
-      <div class="score-circle" style="background:${scColor};">${sc}</div>
+      <div class="score-circle" style="background:${scColor};" id="final-score-val">0</div>
       <div class="score-info">
         <div class="score-lbl">Skor Keamanan Finansial</div>
         <div class="score-title" style="color:${scColor};">Status: ${scLabel}</div>
-        <div class="score-bench">Lebih baik dari 88% responden.</div>
+        <div class="score-bench">${scBench}</div>
       </div>
     </div>
+    ${timestampHtml}
+    
     <div style="font-size:13px;color:var(--ink2);text-align:center;margin:-8px 22px 16px;line-height:1.65;padding:0 8px;">${scMsg}</div>
 
     ${bdHtml}
@@ -1233,7 +1336,13 @@ function buildReviewResult(nm, a, sc, ep, adaK, riwTin) {
     </div>
 
     <div class="r-section">
-      <button class="btn-retry" onclick="retry()">↺ Ulangi Kuis</button>
+      <div style="margin: 20px 0;">
+        <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Hubungi via WhatsApp" class="btn-wa wa-link-btn" style="box-shadow: none;">
+          <svg class="wa-svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Minta Rizki Bantu Review Polis Saya
+        </a>
+      </div>
+      <button class="btn-retry" onclick="if(confirm('Yakin ingin mengulang kuis dari awal? Semua data sebelumnya akan terhapus.')) retry()">↺ Ulangi Kuis</button>
     </div>`;
 
   const stickyWA = document.getElementById('sticky-wa');
@@ -1243,7 +1352,7 @@ function buildReviewResult(nm, a, sc, ep, adaK, riwTin) {
       <option value="weekday">Hari Kerja (Jam Istirahat / Sore–Malam)</option>
       <option value="weekend">Akhir Pekan (Sabtu / Minggu)</option>
     </select>
-    <a href="#" id="wa-btn-link" target="_blank" class="btn-wa">
+    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Hubungi WhatsApp" class="btn-wa wa-link-btn">
       <svg class="wa-svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Minta Rizki Bantu Review Polis Saya
     </a>
@@ -1253,9 +1362,13 @@ function buildReviewResult(nm, a, sc, ep, adaK, riwTin) {
 
   show('s-result');
   requestAnimationFrame(updateWaLink);
+  
+  if(window.scoreAnimTimer) clearInterval(window.scoreAnimTimer);
+  animateScore(document.getElementById('final-score-val'), sc, 1000);
 }
 
 function retry() {
+  if(!confirm('Yakin mau ulangi dari awal? Jawaban kamu sebelumnya akan dihapus.')) return;
   clearSession();
   cur=0; ans={}; uName=''; activeQs=QS;
   _baseWaMsg = '';
