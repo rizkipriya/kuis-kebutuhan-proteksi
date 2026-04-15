@@ -566,9 +566,9 @@ const QS = [
     context:"Biaya RS yang tidak ter-cover bisa menguras tabungan seketika.",
     key:"rs",
     opts:[
-      { t:"Sudah aman 100%, ada asuransi kesehatan swasta yang cover sesuai tagihan", v:"aman" },
+      { t:"Ada asuransi kesehatan swasta yang cover sesuai tagihan", v:"aman" },
       { t:"Mengandalkan BPJS atau asuransi kantor (meski harus siap antre/nombok)", v:"dasar" },
-      { t:"Terpaksa gesek dana darurat atau tabungan pribadi", v:"tabungan" },
+      { t:"Terpaksa gunakan dana darurat atau tabungan pribadi", v:"tabungan" },
       { t:"Pusing. Kemungkinan besar harus ngutang atau pinjam keluarga", v:"bingung" },
     ]
   },
@@ -578,10 +578,10 @@ const QS = [
     context:"Dana darurat adalah lapis pertahanan terakhir dari kebangkrutan.",
     key:"darurat",
     opts:[
-      { t:"Lebih dari 6 bulan — sangat aman", v:"aman" },
-      { t:"3–6 bulan — masih bisa bertahan sesaat", v:"cukup" },
-      { t:"1–3 bulan — mulai khawatir", v:"tipis" },
-      { t:"Kurang dari 1 bulan — langsung bingung bayar cicilan", v:"kritis" },
+      { t:"Lebih dari 6 bulan", v:"aman" },
+      { t:"3–6 bulan", v:"cukup" },
+      { t:"1–3 bulan", v:"tipis" },
+      { t:"Kurang dari 1 bulan", v:"kritis" },
     ]
   },
   {
@@ -593,7 +593,7 @@ const QS = [
     key:"kritis",
     opts:[
       { t:"Tenang — sudah ada asuransi sakit kritis yang akan mengganti penghasilan saya", v:"aman" },
-      { t:"Terpaksa mencairkan dana darurat/tabungan dan mulai jual aset (emas/kendaraan)", v:"cukup" },
+      { t:"Terpaksa mencairkan dana darurat/tabungan dan mulai jual aset (emas/kendaraan/properti)", v:"cukup" },
       { t:"Tabungan cepat habis, dan cicilan bulanan pasti mulai menunggak", v:"tipis" },
       { t:"Jujur, terpaksa berhutang atau minta bantuan dana dari keluarga besar", v:"rentan" },
     ]
